@@ -1,0 +1,15 @@
+<div class="pt-20 p-5 flex flex-col justify-center items-center gap-2">
+	@if (userData) {
+		Zalogowany jako {{ userData.email }}
+		<div class="card flex justify-center">
+			<p-button label="Wyloguj się" [loading]="loading()" (onClick)="logout()" />
+		</div>
+	} @else {
+		<a routerLink="/login" pButton>
+			<span pButtonLabel>Zaloguj się</span>
+		</a>
+		<a routerLink="/sign-up" pButton>
+			<span pButtonLabel>Utwórz konto</span>
+		</a>
+	}
+</div>

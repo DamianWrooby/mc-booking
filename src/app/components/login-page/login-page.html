@@ -1,0 +1,15 @@
+<div class="pt-20 p-5 flex flex-col justify-center items-center gap-2">
+    <p-iftalabel>
+        <input pInputText id="email" [ngModel]="email()" (ngModelChange)="email.set($event)"
+            autocomplete="email" />
+        <label for="email">Email</label>
+    </p-iftalabel>
+    <p-iftalabel>
+        <input pInputText type="password" id="password" [ngModel]="password()" (ngModelChange)="password.set($event)"
+            autocomplete="off" />
+        <label for="password">Password</label>
+    </p-iftalabel>
+    <div class="card flex justify-center">
+        <p-button label="Zatwierdź" [loading]="loading()" [disabled]="buttonDisabled()" (onClick)="submit()" />
+    </div>
+</div>
