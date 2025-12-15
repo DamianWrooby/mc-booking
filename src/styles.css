@@ -2,5 +2,6 @@
 @import 'tailwindcss-primeui';
 
 body {
-	font-family: Inter var, -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+	font-family: "Inter", -apple-system, "BlinkMacSystemFont", "Roboto", "Helvetica", "Arial", sans-serif;
+	font-weight: 400;
 }
