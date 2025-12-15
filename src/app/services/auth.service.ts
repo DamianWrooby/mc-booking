@@ -1,9 +1,8 @@
-import { computed, effect, Injectable, signal, untracked, WritableSignal } from '@angular/core';
-import { environment } from '../../environments/environment';
-import { AuthChangeEvent, AuthSession, createClient, Session, SupabaseClient } from '@supabase/supabase-js';
+import { computed, effect, Injectable, signal, WritableSignal } from '@angular/core';
+import { AuthChangeEvent, AuthSession, Session } from '@supabase/supabase-js';
 import { supabase } from '../supabase/supabase-client';
 import { isEqual } from 'lodash';
-import type { Database, Tables } from '../supabase/database.types';
+import type { Tables } from '../supabase/database.types';
 
 @Injectable({
 	providedIn: 'root',
@@ -20,13 +19,12 @@ export class AuthService {
 	userData = computed(() => this._session()?.user ?? null);
 	isAuthenticated = computed(() => !!this.userData());
 	userProfile: WritableSignal<Tables<'Profile'> | null> = signal(null, { equal: isEqual });
+	initialSessionLoading = signal(true);
 
-	private supabase: SupabaseClient<Database>;
 	private _session: WritableSignal<AuthSession | null> = signal(null, { equal: isEqual });
 
 	constructor() {
-		this.supabase = createClient<Database>(environment.supabaseUrl, environment.supabaseKey);
-		this.restoreSession();
+		this.getSession();
 		this.listenToAuthChanges();
 
 		effect(() => {
@@ -34,18 +32,21 @@ export class AuthService {
 				this.getUserProfile(this.userData()?.id);
 			}
 		});
+		effect(() => {
+			console.log(`The current session is:`, this._session());
+		});
 	}
 
 	authChanges(callback: (event: AuthChangeEvent, session: Session | null) => void) {
-		return this.supabase.auth.onAuthStateChange(callback);
+		return supabase.auth.onAuthStateChange(callback);
 	}
 
-	getSession(): AuthSession | null {
-		this.supabase.auth.getSession().then(({ data }) => {
-			this._session.set(data.session);
-		});
-		return this._session();
-	}
+	async getSession(): Promise<AuthSession | null> {
+        const { data } = await supabase.auth.getSession();
+        this._session.set(data.session);
+        this.initialSessionLoading.set(false);
+        return this._session();
+    }
 
 	async signIn(credentials: { email: string; password: string }) {
 		const { email, password } = credentials;
@@ -75,11 +76,6 @@ export class AuthService {
 		this._session.set(null);
 	}
 
-	private async restoreSession() {
-		const { data } = await supabase.auth.getSession();
-		this._session.set(data.session);
-	}
-
 	private listenToAuthChanges() {
 		supabase.auth.onAuthStateChange((_event, session) => {
 			this._session.set(session);
@@ -89,7 +85,7 @@ export class AuthService {
 	private async getUserProfile(id?: string) {
 		if (!id) return;
 
-		let { data, error } = await this.supabase.from('Profile').select('*').eq('id', id).single();
+		let { data, error } = await supabase.from('Profile').select('*').eq('id', id).single();
 
 		if (error) console.error('Cannot retrieve user profile');
 		this.userProfile.set(data);

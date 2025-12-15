@@ -1,15 +1,22 @@
-<div class="pt-20 p-5 flex flex-col justify-center items-center gap-2">
-	@if (userData) {
-		Zalogowany jako {{ userData.email }}
-		<div class="card flex justify-center">
-			<p-button label="Wyloguj się" [loading]="loading()" (onClick)="logout()" />
+<app-layout>
+	@defer (when !initialSessionLoading()) {
+		@if (userData()) {
+		Zalogowany jako {{ userData()?.email }}
+		<div class="flex flex-col justify-center items-center gap-1">
+			<a class="w-48" routerLink="/create-job" pButton>
+				<span pButtonLabel>Dodaj wydarzenie</span>
+			</a>
+			<p-button styleClass="w-48" label="Wyloguj się" severity="danger" [loading]="loading()" (onClick)="logout()" />
 		</div>
-	} @else {
+		} @else {
 		<a routerLink="/login" pButton>
-			<span pButtonLabel>Zaloguj się</span>
+			<span pButtonLabel>Zaloguj się</span>f
 		</a>
 		<a routerLink="/sign-up" pButton>
 			<span pButtonLabel>Utwórz konto</span>
 		</a>
+		}
+	} @placeholder {
+		<p-progress-spinner ariaLabel="loading" />
 	}
-</div>
+</app-layout>

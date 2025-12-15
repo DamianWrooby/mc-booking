@@ -6,10 +6,11 @@ import { IftaLabelModule } from 'primeng/iftalabel';
 import { ButtonModule } from 'primeng/button';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
+import { Layout } from '../layout/layout';
 
 @Component({
 	selector: 'app-login-page',
-	imports: [FormsModule, IftaLabelModule, InputTextModule, ButtonModule],
+	imports: [FormsModule, IftaLabelModule, InputTextModule, ButtonModule, Layout],
 	templateUrl: './login-page.html',
 	styleUrl: './login-page.css',
 	changeDetection: ChangeDetectionStrategy.OnPush,
@@ -23,10 +24,6 @@ export class LoginPage {
 	loading = signal(false);
 
 	buttonDisabled = computed(() => !this.email() || !this.password());
-
-	constructor() {
-		this.handleAuthChanges();
-	}
 
 	async submit() {
 		try {
@@ -44,11 +41,5 @@ export class LoginPage {
 
 	private goToMainPage(): void {
 		this.router.navigate(['']);
-	}
-
-	private handleAuthChanges() {
-		this.auth.authChanges(() => {
-			if (this.auth.isAuthenticated()) this.goToMainPage();
-		});
 	}
 }

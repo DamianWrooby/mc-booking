@@ -13,6 +13,7 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { providePrimeNG } from 'primeng/config';
 import Aura from '@primeuix/themes/aura';
 import { definePreset } from '@primeuix/themes'
+import { provideHttpClient } from '@angular/common/http';
 
 const CustomPreset = definePreset(Aura, {
 	primitive: {
@@ -39,6 +40,7 @@ const CustomPreset = definePreset(Aura, {
 
 export const appConfig: ApplicationConfig = {
 	providers: [
+		provideHttpClient(),
 		provideBrowserGlobalErrorListeners(),
 		provideZonelessChangeDetection(),
 		provideRouter(routes),
@@ -51,7 +53,7 @@ export const appConfig: ApplicationConfig = {
 			theme: {
 				preset: CustomPreset,
 				options: {
-					darkModeSelector: false,
+					darkModeSelector: '.mc-booking-dark',
 				},
 			},
 			ripple: true,

@@ -6,10 +6,11 @@ import { InputTextModule } from 'primeng/inputtext';
 import { IftaLabelModule } from 'primeng/iftalabel';
 import { ButtonModule } from 'primeng/button';
 import { AuthService } from '../../services/auth.service';
+import { Layout } from '../layout/layout';
 
 @Component({
 	selector: 'app-sign-up-page',
-	imports: [FormsModule, IftaLabelModule, InputTextModule, ButtonModule],
+	imports: [FormsModule, IftaLabelModule, InputTextModule, ButtonModule, Layout],
 	templateUrl: './sign-up-page.html',
 	styleUrl: './sign-up-page.css',
 	changeDetection: ChangeDetectionStrategy.OnPush,

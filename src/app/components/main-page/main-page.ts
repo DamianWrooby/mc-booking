@@ -1,41 +1,35 @@
-import {
-	Component,
-	ChangeDetectionStrategy,
-	OnInit,
-	inject,
-	signal,
-	effect,
-	WritableSignal,
-} from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, signal, computed, effect } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { AuthService } from '../../services/auth.service';
-import { AuthSession } from '@supabase/supabase-js';
-import { isEqual } from 'lodash';
+import { Layout } from '../layout/layout';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
 	selector: 'app-main-page',
-	imports: [ButtonModule, RouterLink],
+	imports: [Layout, ButtonModule, ProgressSpinnerModule, RouterLink],
 	templateUrl: './main-page.html',
 	styleUrl: './main-page.css',
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MainPage implements OnInit {
+export class MainPage {
 	private auth = inject(AuthService);
 	private router = inject(Router);
-	private session: WritableSignal<AuthSession | null> = signal(this.auth.getSession(), { equal: isEqual });
+	private http = inject(HttpClient);
 
-	userData = this.auth.userData();
+	userData = computed(() => this.auth.userData());
+	initialSessionLoading = computed(() => this.auth.initialSessionLoading());
 	loading = signal(false);
+
+	readonly URI_1 = 'https://jsonplaceholder.typicode.com/todos/1';
+	readonly URI_2 = 'https://jsonplaceholder.typicode.com/todos/2';
+	readonly URI_3 = 'https://jsonplaceholder.typicode.com/todos/3';
 
 	constructor() {
 		effect(() => {
-			console.log(`The current session is:`, this.session());
+			console.log('User Data:', this.userData());
 		});
-	}
-
-	ngOnInit() {
-		this.auth.authChanges((_, session) => this.session.set(session));
 	}
 
 	async logout() {

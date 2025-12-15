@@ -1,4 +1,4 @@
-<div class="pt-20 p-5 flex flex-col justify-center items-center gap-2">
+<app-layout>
     <p-iftalabel>
         <input pInputText id="email" [ngModel]="email()" (ngModelChange)="email.set($event)"
             autocomplete="email" />
@@ -12,4 +12,4 @@
     <div class="card flex justify-center">
         <p-button label="Zatwierdź" [loading]="loading()" [disabled]="buttonDisabled()" (onClick)="submit()" />
     </div>
-</div>
+</app-layout>
