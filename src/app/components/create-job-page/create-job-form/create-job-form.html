@@ -1,0 +1,25 @@
+<form #createJobForm="ngForm" class="align-left">
+	<label for="title" class="font-bold block mb-1">Tytuł</label>
+	<input id="title" pInputText type="text" name="title" [(ngModel)]="formData.title" class="mb-4 w-full" />
+
+	<label for="description" class="font-bold block mb-1">Opis</label>
+	<textarea id="description" name="description" rows="5" col="30" pTextarea [(ngModel)]="formData.description" class="mb-4 w-full"></textarea>
+
+	<label for="location" class="font-bold block mb-1">Miejsce</label>
+	<input id="location" name="location" pInputText type="text" [(ngModel)]="formData.location" class="mb-4 w-full" />
+
+	<label for="startDate" class="font-bold block mb-1">Data rozpoczęcia</label>
+	<p-datepicker class="mb-5" inputId="startDate" name="startDate" [(ngModel)]="formData.startDate" [showTime]="true" hourFormat="24"></p-datepicker>
+
+
+	<!-- TODO - dodać brakującą walidację do pól wyżej -->
+	<label for="endDate" class="font-bold block mb-1">Data zakończenia</label>
+	<p-datepicker name="endDate" #dateModel="ngModel" inputId="endDate"
+		[(ngModel)]="formData.endDate"
+		[invalid]="dateModel.invalid && (dateModel.touched || createJobForm.submitted)"
+		[showTime]="true" hourFormat="24" required></p-datepicker>
+	@if (dateModel.invalid && dateModel.touched) {
+		<p-message severity="error" size="small" variant="simple">Date is required.</p-message>
+	}
+</form>
+<p-button styleClass="w-48 mt-8 mx-auto" label="Utwórz" severity="danger" [loading]="loading()" (onClick)="createJob()"></p-button>

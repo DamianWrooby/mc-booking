@@ -1,0 +1,7 @@
+<app-layout>
+	@if (userProfile()?.role === 'MANAGER' || userProfile()?.role === 'ADMIN') {
+		<app-create-job-form></app-create-job-form>
+	} @else {
+		Brak uprawnień do tworzenia wydarzeń.
+	}
+</app-layout>
