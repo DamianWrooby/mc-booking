@@ -1,8 +1,9 @@
-import { computed, effect, Injectable, signal, WritableSignal } from '@angular/core';
+import { computed, effect, inject, Injectable, signal, WritableSignal } from '@angular/core';
 import { AuthChangeEvent, AuthSession, Session } from '@supabase/supabase-js';
-import { supabase } from '../supabase/supabase-client';
+import { supabase } from '../../supabase/supabase-client';
 import { isEqual } from 'lodash';
-import type { Tables } from '../supabase/database.types';
+import type { Tables } from '../../supabase/database.types';
+import { Router } from '@angular/router';
 
 @Injectable({
 	providedIn: 'root',
@@ -22,6 +23,7 @@ export class AuthService {
 	initialSessionLoading = signal(true);
 
 	private _session: WritableSignal<AuthSession | null> = signal(null, { equal: isEqual });
+	private router = inject(Router);
 
 	constructor() {
 		this.getSession();
@@ -74,6 +76,13 @@ export class AuthService {
 		const { error } = await supabase.auth.signOut();
 		if (error) throw error;
 		this._session.set(null);
+	}
+
+	async signOutAndRedirect() {
+		const { error } = await supabase.auth.signOut();
+		if (error) throw error;
+		this._session.set(null);
+		this.router.navigate(['login']);
 	}
 
 	private listenToAuthChanges() {

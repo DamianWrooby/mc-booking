@@ -4,7 +4,9 @@ import { DatePickerModule } from 'primeng/datepicker';
 import { ButtonModule } from 'primeng/button';
 import { Layout } from '../layout/layout';
 import { CreateJobForm } from './create-job-form/create-job-form';
-import { AuthService } from '../../services/auth.service';
+import { AuthService } from '../../services/auth/auth.service';
+import { JobService } from '../../services/job/job.service';
+import { JobFormSubmitModel } from '../../models/job-form.model';
 
 @Component({
 	selector: 'app-create-job-page',
@@ -14,18 +16,16 @@ import { AuthService } from '../../services/auth.service';
 })
 export class CreateJobPage {
 	private auth = inject(AuthService);
-
+	private jobService = inject(JobService);
 
 	startDate: Date[] | undefined;
 	endDate: Date[] | undefined;
-	loading = signal(false);
+	loading = this.jobService.loading;
 
 	userProfile = this.auth.userProfile;
 
-	createJob() {
-		this.loading.set(true);
-		console.log('Creating job with dates:', this.startDate, this.endDate);
-		this.loading.set(false);
-		
+	createJob(formValues: JobFormSubmitModel) {
+		console.log('Creating job with formValues:', formValues);
+		this.jobService.create(formValues);
 	}
 }

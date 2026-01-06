@@ -14,6 +14,7 @@ import { providePrimeNG } from 'primeng/config';
 import Aura from '@primeuix/themes/aura';
 import { definePreset } from '@primeuix/themes'
 import { provideHttpClient } from '@angular/common/http';
+import { MessageService } from 'primeng/api';
 
 const CustomPreset = definePreset(Aura, {
 	primitive: {
@@ -58,5 +59,6 @@ export const appConfig: ApplicationConfig = {
 			},
 			ripple: true,
 		}),
+		MessageService,
 	],
 };
