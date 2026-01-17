@@ -125,6 +125,6 @@ export class AuthService {
 		}
 
 		this.userProfile.set(data);
-		return {success: true};
+		return { success: true};
 	}
 }
