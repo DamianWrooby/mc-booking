@@ -9,12 +9,6 @@
 			Zalogowany jako {{ user.email }}
 			<div class="flex flex-col justify-center items-center gap-1">
 				<app-event-calendar />
-				<a class="w-48" routerLink="/job-list" pButton>
-					<span pButtonLabel>Lista eventów</span>
-				</a>
-				<a class="w-48" routerLink="/create-job" pButton>
-					<span pButtonLabel>Dodaj wydarzenie</span>
-				</a>
 				<p-button styleClass="w-48" label="Wyloguj się" severity="danger" [loading]="loading()" (onClick)="logout()" />
 			</div>
 		} @else {

@@ -1,0 +1,64 @@
+@if (isAuthenticated()) {
+  <nav class="fixed bottom-0 left-0 right-0 z-50 bg-surface-0 dark:bg-surface-900 border-t border-surface-200 dark:border-surface-700 h-16">
+    <div class="flex items-center h-full safe-area-bottom">
+      <!-- Kalendarz -->
+      <a
+        routerLink="/"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="flex items-center justify-center flex-1 h-full nav-item"
+        pRipple
+      >
+        <i class="pi pi-calendar text-2xl"></i>
+      </a>
+
+      <div class="w-px h-10 bg-surface-200 dark:bg-surface-700"></div>
+
+      <!-- Eventy -->
+      <a
+        routerLink="/job-list"
+        routerLinkActive="active"
+        class="flex items-center justify-center flex-1 h-full nav-item"
+        pRipple
+      >
+        <i class="pi pi-list text-2xl"></i>
+      </a>
+
+      <div class="w-px h-10 bg-surface-200 dark:bg-surface-700"></div>
+
+      <!-- Moje -->
+      <a
+        routerLink="/my-jobs"
+        routerLinkActive="active"
+        class="flex items-center justify-center flex-1 h-full nav-item"
+        pRipple
+      >
+        <i class="pi pi-briefcase text-2xl"></i>
+      </a>
+
+      <div class="w-px h-10 bg-surface-200 dark:bg-surface-700"></div>
+
+      <!-- Więcej -->
+      <button
+        #moreBtn
+        (click)="morePopover.toggle($event)"
+        class="flex items-center justify-center flex-1 h-full nav-item"
+        pRipple
+      >
+        <i class="pi pi-ellipsis-h text-2xl"></i>
+      </button>
+
+      <p-popover #morePopover [appendTo]="'body'">
+        <div class="flex flex-col gap-2 p-2 min-w-48">
+          <button
+            pButton
+            label="Moje konto"
+            icon="pi pi-user"
+            class="p-button-text justify-start"
+            (click)="navigateAndClosePopover(morePopover, '/my-account')"
+          ></button>
+        </div>
+      </p-popover>
+    </div>
+  </nav>
+}

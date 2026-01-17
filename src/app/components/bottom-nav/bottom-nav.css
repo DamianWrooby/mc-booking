@@ -1,0 +1,23 @@
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.nav-item {
+  color: var(--text-color-secondary);
+  transition: color 0.2s;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+}
+
+.nav-item:hover {
+  color: var(--text-color);
+}
+
+.nav-item.active {
+  color: var(--primary-color);
+}
+
+.nav-item.active i {
+  color: var(--primary-color);
+}
