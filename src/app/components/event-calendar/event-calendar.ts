@@ -1,6 +1,7 @@
-import { Component, inject, signal, computed, effect, OnInit } from '@angular/core';
+import { Component, inject, signal, computed, effect, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { DatePipe } from '@angular/common';
 import { DatePicker } from 'primeng/datepicker';
-import { Tooltip } from 'primeng/tooltip';
+import { Card } from 'primeng/card';
 import { JobService } from '../../services/job/job.service';
 import type { Tables } from '../../supabase/database.types';
 
@@ -8,14 +9,16 @@ type Job = Tables<'Job'>;
 
 @Component({
   selector: 'app-event-calendar',
-  imports: [DatePicker, Tooltip],
+  imports: [DatePicker, Card, DatePipe],
   templateUrl: './event-calendar.html',
   styleUrl: './event-calendar.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EventCalendar implements OnInit {
 	private jobService = inject(JobService);
 
-	private readonly currentDate = signal<Date>(new Date());
+	readonly currentDate = signal<Date>(new Date());
+	readonly selectedDate = signal<Date | null>(null);
 	private readonly jobs = signal<Job[]>([]);
 
 	private readonly eventColors = [
@@ -36,7 +39,7 @@ export class EventCalendar implements OnInit {
 		this.jobs().forEach((job) => {
 			const startDate = new Date(job.start_date);
 			const endDate = new Date(job.end_date);
-			
+
 			// Iterate through all dates in the job's date range
 			const currentDate = new Date(startDate);
 			while (currentDate <= endDate) {
@@ -49,6 +52,38 @@ export class EventCalendar implements OnInit {
 			}
 		});
 		return jobsMap;
+	});
+
+	readonly selectedDateJobs = computed(() => {
+		const date = this.selectedDate();
+		if (!date) return [];
+		return this.getJobsForDate(date);
+	});
+
+	readonly currentMonthJobs = computed(() => {
+		const current = this.currentDate();
+		const year = current.getFullYear();
+		const month = current.getMonth();
+
+		// Get unique jobs for the current month (avoid duplicates from multi-day jobs)
+		const jobsInMonth = new Map<string, Job>();
+		this.jobs().forEach((job) => {
+			const startDate = new Date(job.start_date);
+			const endDate = new Date(job.end_date);
+
+			// Check if job overlaps with current month
+			const monthStart = new Date(year, month, 1);
+			const monthEnd = new Date(year, month + 1, 0);
+
+			if (startDate <= monthEnd && endDate >= monthStart) {
+				jobsInMonth.set(job.id, job);
+			}
+		});
+
+		// Sort by start date
+		return Array.from(jobsInMonth.values()).sort(
+			(a, b) => new Date(a.start_date).getTime() - new Date(b.start_date).getTime()
+		);
 	});
 
 	constructor() {
@@ -69,7 +104,28 @@ export class EventCalendar implements OnInit {
 		// Update current date when month changes
 		if (event.year !== undefined && event.month !== undefined) {
 			this.currentDate.set(new Date(event.year, event.month, 1));
+			// Clear selected date when changing months
+			this.selectedDate.set(null);
 		}
+	}
+
+	onDateClick(date: Date | { day: number; month: number; year: number }): void {
+		const dateObj = this.normalizeDate(date);
+		const currentSelected = this.selectedDate();
+
+		// Toggle selection if clicking the same date
+		if (currentSelected && this.getDateKey(currentSelected) === this.getDateKey(dateObj)) {
+			this.selectedDate.set(null);
+		} else if (this.hasEvents(date)) {
+			this.selectedDate.set(dateObj);
+		}
+	}
+
+	isSelected(date: Date | { day: number; month: number; year: number }): boolean {
+		const selected = this.selectedDate();
+		if (!selected) return false;
+		const dateObj = this.normalizeDate(date);
+		return this.getDateKey(selected) === this.getDateKey(dateObj);
 	}
 
 	hasEvents(date: Date | { day: number; month: number; year: number }): boolean {
@@ -85,29 +141,15 @@ export class EventCalendar implements OnInit {
 		return this.jobsByDate().get(dateKey) || [];
 	}
 
-	getTooltip(date: Date | { day: number; month: number; year: number }): string {
-		const jobs = this.getJobsForDate(date);
-		if (jobs.length === 0) {
-			return '';
-		}
-
-		return jobs
-			.map((job) => {
-				const startDate = new Date(job.start_date).toLocaleDateString('pl-PL');
-				const endDate = new Date(job.end_date).toLocaleDateString('pl-PL');
-				const dateRange =
-					job.start_date === job.end_date
-						? startDate
-						: `${startDate} - ${endDate}`;
-				return `${job.title}\n${job.location || 'Brak lokalizacji'}\n${dateRange}\n${job.description || ''}`;
-			})
-			.join('\n\n');
-	}
-
 	getEventColor(date: Date | { day: number; month: number; year: number }): string | null {
 		const jobs = this.getJobsForDate(date);
 		if (jobs.length === 0) return null;
 		const hash = this.hashString(jobs[0].id);
+		return this.eventColors[hash % this.eventColors.length];
+	}
+
+	getJobColor(job: Job): string {
+		const hash = this.hashString(job.id);
 		return this.eventColors[hash % this.eventColors.length];
 	}
 
