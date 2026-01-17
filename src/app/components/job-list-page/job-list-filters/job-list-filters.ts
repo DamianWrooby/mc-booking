@@ -41,7 +41,7 @@ export class JobListFilters {
 	}
 
 	private emitFilters() {
-		const range = this.dateRange();
+		const range = this.dateRange(); 
 		this.filtersChange.emit({
 			dateRange: range && range.length === 2 ? [range[0], range[1]] : null,
 			createdBy: this.selectedUserId(),
