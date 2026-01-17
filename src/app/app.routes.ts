@@ -23,4 +23,9 @@ export const routes: Routes = [
 		loadComponent: () => import('./components/create-job-page/create-job-page').then((mod) => mod.CreateJobPage),
 		data: { allowedRoles: ['ADMIN', 'MANAGER'] }
 	},
+	{
+		path: 'job-list',
+		canActivate: [authGuard],
+		loadComponent: () => import('./components/job-list-page/job-list-page').then((mod) => mod.JobListPage),
+	},
 ];
