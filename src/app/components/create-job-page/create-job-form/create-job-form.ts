@@ -6,6 +6,7 @@ import { TextareaModule } from 'primeng/textarea';
 import { ButtonModule } from 'primeng/button';
 import { MessageModule } from 'primeng/message';
 import { AutoCompleteModule, AutoCompleteCompleteEvent } from 'primeng/autocomplete';
+import { ChipModule } from 'primeng/chip';
 import { JobFormModel, JobFormSubmitModel } from '../../../models/job-form.model';
 import { AuthService } from '../../../services/auth/auth.service';
 import { UserService } from '../../../services/user/user.service';
@@ -31,6 +32,7 @@ const initialFormValues: JobFormModel = {
 		ButtonModule,
 		MessageModule,
 		AutoCompleteModule,
+		ChipModule,
 	],
 	templateUrl: './create-job-form.html',
 	styleUrl: './create-job-form.css',
@@ -85,7 +87,6 @@ export class CreateJobForm implements OnInit {
 		this.formModel.assignedUsers = this.formModel.assignedUsers.filter((u) => u.id !== user.id);
 	}
 
-	
 	onSubmit(form: NgForm) {
 		this.validateForm(form);
 		

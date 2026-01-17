@@ -54,25 +54,21 @@
 		<p-autocomplete
 			inputId="assignedUsers"
 			[(ngModel)]="selectedUser"
+			name="assignedUsers"
 			[suggestions]="filteredUsers()"
 			(completeMethod)="filterUsers($event)"
 			(onSelect)="onUserSelect($event)"
 			[completeOnFocus]="true"
 			optionLabel="username"
 			placeholder="Wyszukaj użytkowników..."
-			styleClass="w-full">
+			class="w-full">
 		</p-autocomplete>
 		@if (formModel.assignedUsers.length > 0) {
-			<ul class="mt-2 flex flex-col gap-1">
+			<div class="mt-2 flex flex-col gap-1">
 				@for (user of formModel.assignedUsers; track user.id) {
-					<li class="flex items-center justify-between p-2 bg-surface-100 dark:bg-surface-800 rounded">
-						<span>{{ user.username }}</span>
-						<button type="button" class="text-red-500 hover:text-red-700" (click)="removeUser(user)">
-							<i class="pi pi-times"></i>
-						</button>
-					</li>
+					<p-chip [label]="user.username" [removable]="true" (onRemove)="removeUser(user)" />
 				}
-			</ul>
+			</div>
 		}
 	</fieldset>
 
@@ -81,58 +77,3 @@
 		[disabled]="!createJobForm.form.valid">
 	</p-button>
 </form>
-<!-- <form class="align-left">
-	<fieldset class="mb-5">
-		<label for="title" class="font-bold block mb-1">Tytuł</label>
-		<input id="title" pInputText type="text"
-			class="w-full" [field]="form.title" />
-		@if (form.title().invalid() && form.title().touched()) {
-			<p-message severity="error" size="small" variant="simple">To pole jest wymagane</p-message>
-		}
-	</fieldset>
-
-	<fieldset class="mb-5">
-		<label for="description" class="font-bold block mb-1">Opis</label>
-		<textarea id="description" rows="5" col="30" pTextarea
-			class="w-full" [field]="form.description">
-		</textarea>
-		@if (form.description().invalid() && form.description().touched()) {
-			<p-message severity="error" size="small" variant="simple">To pole jest wymagane</p-message>
-		}
-	</fieldset>
-
-	<fieldset class="mb-5">
-		<label for="location" class="font-bold block mb-1">Miejsce</label>
-		<input id="location" pInputText type="text"
-			class="w-full" [field]="form.location" />
-		@if (form.location().invalid() && form.location().touched()) {
-			<p-message severity="error" size="small" variant="simple">To pole jest wymagane</p-message>
-		}
-	</fieldset>
-
-	<fieldset class="mb-5">
-		<label for="startDate" class="font-bold block mb-1">Data rozpoczęcia</label>
-		<p-datepicker inputId="startDate"
-			[showTime]="true" [field]="form.startDate"
-			hourFormat="24"></p-datepicker>
-		@if (form.startDate().invalid() && form.startDate().touched()) {
-			<p-message severity="error" size="small" variant="simple">To pole jest wymagane</p-message>
-		}
-	</fieldset>
-
-	<fieldset class="mb-5">
-		<label for="endDate" class="font-bold block mb-1">Data zakończenia</label>
-		<p-datepicker inputId="endDate"
-			[showTime]="true" [field]="form.endDate"
-			hourFormat="24"></p-datepicker>
-		@if (form.endDate().invalid() && form.endDate().touched()) {
-			<p-message severity="error" size="small" variant="simple">To pole jest wymagane</p-message>
-		}
-	</fieldset>
-	<p-button (onClick)="onSubmit()"
-		type="submit" styleClass="w-48 mt-8 mx-auto"
-		[label]="form().submitting() ? 'Wysyłanie...' : 'Wyślij'" 			
-		severity="danger" 	[loading]="loading()"
-		[disabled]="form().submitting()">
-	</p-button>
-</form> -->
