@@ -39,7 +39,7 @@ export class EventCalendar implements OnInit {
 		this.jobs().forEach((job) => {
 			const startDate = new Date(job.start_date);
 			const endDate = new Date(job.end_date);
-			// Iterate through all dates in the job's date range
+
 			const currentDate = new Date(startDate);
 			while (currentDate <= endDate) {
 				const dateKey = this.getDateKey(currentDate);
