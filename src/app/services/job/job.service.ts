@@ -70,6 +70,35 @@ export class JobService implements HttpService<Job> {
 			});
 	}
 
+	getByUserId(userId: string): void {
+		this.setLoading(true);
+		this.resetError();
+
+		from(
+			supabase
+				.from('JobAssignment')
+				.select('job_id, status, Job(*)')
+				.eq('user_id', userId)
+		)
+			.pipe(
+				map(({ data, error }) => {
+					if (error) throw error;
+					return (data ?? []).map((assignment) => assignment.Job as Job).filter(Boolean);
+				}),
+				catchError((_) => {
+					this.setError('Failed to load user jobs');
+					return of([]);
+				})
+			)
+			.subscribe((jobs) => {
+				this.state.update((state) => ({
+					...state,
+					items: jobs,
+					loading: false,
+				}));
+			});
+	}
+
 	getById(id: string): void {
 		this.setLoading(true);
 		this.resetError();
@@ -94,7 +123,10 @@ export class JobService implements HttpService<Job> {
 			});
 	}
 
-	create(job: Omit<Job, 'id' | 'created_at' | 'created_by'>): void {
+	create(
+		job: Omit<Job, 'id' | 'created_at' | 'created_by'>,
+		onSuccess?: (createdJob: Job) => void
+	): void {
 		this.setLoading(true);
 		this.resetError();
 
@@ -124,6 +156,8 @@ export class JobService implements HttpService<Job> {
 					selectedItem: newJob,
 					loading: false,
 				}));
+
+				onSuccess?.(newJob);
 			});
 	}
 

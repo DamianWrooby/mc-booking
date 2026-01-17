@@ -99,4 +99,11 @@ export class AuthService {
 		if (error) console.error('Cannot retrieve user profile');
 		this.userProfile.set(data);
 	}
+
+	async ensureProfileLoaded(): Promise<void> {
+		if (this.userProfile()) return;
+		if (this.isAuthenticated()) {
+			await this.getUserProfile(this.userData()?.id);
+		}
+	}
 }

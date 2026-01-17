@@ -48,7 +48,35 @@
 		<p-message severity="error" size="small" variant="simple">To pole jest wymagane</p-message>
 		}
 	</fieldset>
-	<p-button type="submit" styleClass="w-48 mt-8 mx-auto" label="Utwórz" 			
+
+	<fieldset class="mb-5">
+		<label for="assignedUsers" class="font-bold block mb-1">Przypisani użytkownicy</label>
+		<p-autocomplete
+			inputId="assignedUsers"
+			[(ngModel)]="selectedUser"
+			[suggestions]="filteredUsers()"
+			(completeMethod)="filterUsers($event)"
+			(onSelect)="onUserSelect($event)"
+			[completeOnFocus]="true"
+			optionLabel="username"
+			placeholder="Wyszukaj użytkowników..."
+			styleClass="w-full">
+		</p-autocomplete>
+		@if (formModel.assignedUsers.length > 0) {
+			<ul class="mt-2 flex flex-col gap-1">
+				@for (user of formModel.assignedUsers; track user.id) {
+					<li class="flex items-center justify-between p-2 bg-surface-100 dark:bg-surface-800 rounded">
+						<span>{{ user.username }}</span>
+						<button type="button" class="text-red-500 hover:text-red-700" (click)="removeUser(user)">
+							<i class="pi pi-times"></i>
+						</button>
+					</li>
+				}
+			</ul>
+		}
+	</fieldset>
+
+	<p-button type="submit" styleClass="w-48 mt-8 mx-auto" label="Utwórz"
 		severity="danger" 	[loading]="loading()"
 		[disabled]="!createJobForm.form.valid">
 	</p-button>
