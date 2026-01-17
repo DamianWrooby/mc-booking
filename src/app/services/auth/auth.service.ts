@@ -106,4 +106,25 @@ export class AuthService {
 			await this.getUserProfile(this.userData()?.id);
 		}
 	}
+
+	async updateProfile(updates: { username: string }): Promise<{ success: boolean; error?: string }> {
+		const userId = this.userData()?.id;
+		if (!userId) {
+			return { success: false, error: 'User not authenticated' };
+		}
+
+		const { data, error } = await supabase
+			.from('Profile')
+			.update({ username: updates.username })
+			.eq('id', userId)
+			.select()
+			.single();
+
+		if (error) {
+			return { success: false, error: error.message };
+		}
+
+		this.userProfile.set(data);
+		return { success: true };
+	}
 }

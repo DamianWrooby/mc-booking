@@ -33,4 +33,10 @@ export const routes: Routes = [
 		canActivate: [authGuard],
 		loadComponent: () => import('./components/my-jobs-page/my-jobs-page').then((mod) => mod.MyJobsPage),
 	},
+	{
+		path: 'my-account',
+		canActivate: [authGuard],
+		loadComponent: () =>
+			import('./components/my-account-page/my-account-page').then((mod) => mod.MyAccountPage),
+	},
 ];
