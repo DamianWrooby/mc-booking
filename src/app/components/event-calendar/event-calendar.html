@@ -1,0 +1,16 @@
+<p-datepicker
+	class="max-w-full"
+	[inline]="true"
+	[firstDayOfWeek]="1"
+	(onMonthChange)="onMonthChange($event)">
+	<ng-template #date let-date>
+		<div
+			class="day-cell"
+			[class.isEvent]="hasEvents(date)"
+			[style.background-color]="getEventColor(date)"
+			[pTooltip]="getTooltip(date) || undefined"
+			tooltipPosition="top">
+			{{ date.day }}
+		</div>
+	</ng-template>
+</p-datepicker>

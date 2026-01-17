@@ -37,6 +37,30 @@ export class UserService implements HttpService<UserProfile> {
 		});
 	}
 
+	getAll(): void {
+		this.setLoading(true);
+		this.resetError();
+
+		from(supabase.from('Profile').select('*'))
+			.pipe(
+				map(({ data, error }) => {
+					if (error) throw error;
+					return data ?? [];
+				}),
+				catchError((_) => {
+					this.setError('Failed to load users');
+					return of([]);
+				})
+			)
+			.subscribe((users) => {
+				this.state.update((state) => ({
+					...state,
+					items: users,
+					loading: false,
+				}));
+			});
+	}
+
 	getById(id: string): void {
 		this.setLoading(true);
 		this.resetError();

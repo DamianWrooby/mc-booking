@@ -3,6 +3,7 @@ import {
 	provideBrowserGlobalErrorListeners,
 	provideZonelessChangeDetection,
 	isDevMode,
+	LOCALE_ID,
 } from '@angular/core';
 import { provideRouter } from '@angular/router';
 
@@ -15,6 +16,7 @@ import Aura from '@primeuix/themes/aura';
 import { definePreset } from '@primeuix/themes'
 import { provideHttpClient } from '@angular/common/http';
 import { MessageService } from 'primeng/api';
+import { pl } from "primelocale/js/pl.js";
 
 const CustomPreset = definePreset(Aura, {
 	primitive: {
@@ -57,8 +59,10 @@ export const appConfig: ApplicationConfig = {
 					darkModeSelector: '.mc-booking-dark',
 				},
 			},
+			translation: pl,
 			ripple: true,
 		}),
+		{ provide: LOCALE_ID, useValue: 'pl-PL' },
 		MessageService,
 	],
 };
