@@ -39,26 +39,39 @@
       <div class="w-px h-10 bg-surface-200 dark:bg-surface-700"></div>
 
       <!-- Więcej -->
-      <button
-        #moreBtn
-        (click)="morePopover.toggle($event)"
-        class="flex items-center justify-center flex-1 h-full nav-item"
-        pRipple
-      >
-        <i class="pi pi-ellipsis-h text-2xl"></i>
-      </button>
+      <div class="relative flex-1 h-full">
+        <button
+          (click)="toggleMoreMenu()"
+          class="flex items-center justify-center w-full h-full nav-item"
+          pRipple
+        >
+          <i class="pi pi-ellipsis-h text-2xl"></i>
+        </button>
 
-      <p-popover #morePopover [appendTo]="'body'">
-        <div class="flex flex-col gap-2 p-2 min-w-48">
-          <button
-            pButton
-            label="Moje konto"
-            icon="pi pi-user"
-            class="p-button-text justify-start"
-            (click)="navigateAndClosePopover(morePopover, '/my-account')"
-          ></button>
-        </div>
-      </p-popover>
+        @if (moreMenuOpen()) {
+          <div class="more-menu">
+            <button
+              pButton
+              label="Moje konto"
+              icon="pi pi-user"
+              class="p-button-text justify-start w-full"
+              (click)="navigateTo('/my-account')"
+            ></button>
+            <div class="h-px my-1 bg-surface-200 dark:bg-surface-700"></div>
+            <button
+              pButton
+              label="Wyloguj"
+              icon="pi pi-sign-out"
+              class="p-button-text justify-start w-full"
+              (click)="logout()"
+            ></button>
+          </div>
+        }
+      </div>
     </div>
   </nav>
+
+  @if (moreMenuOpen()) {
+    <div class="fixed inset-0 z-40" (click)="closeMoreMenu()"></div>
+  }
 }
