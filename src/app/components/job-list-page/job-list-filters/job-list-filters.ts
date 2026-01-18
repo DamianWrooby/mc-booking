@@ -3,7 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { DatePickerModule } from 'primeng/datepicker';
 import { Select } from 'primeng/select';
 import { ButtonModule } from 'primeng/button';
-import { UserProfile } from '../../../models/user.model';
+import { ProfileDto } from '../../../types';
 
 export interface JobFilters {
 	dateRange: [Date, Date] | null;
@@ -17,7 +17,7 @@ export interface JobFilters {
 	styleUrl: './job-list-filters.css',
 })
 export class JobListFilters {
-	users = input<UserProfile[]>([]);
+	users = input<ProfileDto[]>([]);
 	loading = input<boolean>(false);
 	filtersChange = output<JobFilters>();
 

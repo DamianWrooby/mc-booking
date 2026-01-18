@@ -4,7 +4,8 @@ import { ErrorService } from '../error/error.service';
 import { HttpService } from '../../models/http-service.model';
 import { supabase } from '../../supabase/supabase-client';
 import { catchError, from, map, of } from 'rxjs';
-import { UserProfile, UserState } from '../../models/user.model';
+import { UserState } from '../../models/user.model';
+import { ProfileDto } from '../../types';
 
 const initialState: UserState = {
 	items: [],
@@ -16,7 +17,7 @@ const initialState: UserState = {
 @Injectable({
 	providedIn: 'root',
 })
-export class UserService implements HttpService<UserProfile> {
+export class UserService implements HttpService<ProfileDto> {
 	private errorService = inject(ErrorService);
 
 	private readonly state = signal<UserState>(initialState);

@@ -11,7 +11,7 @@ import { JobFormModel, JobFormSubmitModel } from '../../../models/job-form.model
 import { AuthService } from '../../../services/auth/auth.service';
 import { UserService } from '../../../services/user/user.service';
 import { MessageService } from 'primeng/api';
-import type { UserProfile } from '../../../models/user.model';
+import type { ProfileDto } from '../../../types';
 
 const initialFormValues: JobFormModel = {
 	title: '',
@@ -46,9 +46,9 @@ export class CreateJobForm implements OnInit {
 	formSubmission = output<JobFormSubmitModel>();
 
 	formModel: JobFormModel = { ...initialFormValues };
-	selectedUser: UserProfile | null = null;
+	selectedUser: ProfileDto | null = null;
 
-	filteredUsers = signal<UserProfile[]>([]);
+	filteredUsers = signal<ProfileDto[]>([]);
 
 	userProfile = this.auth.userProfile;
 	allUsers = this.userService.items;
@@ -75,7 +75,7 @@ export class CreateJobForm implements OnInit {
 		);
 	}
 
-	onUserSelect(event: { value: UserProfile }): void {
+	onUserSelect(event: { value: ProfileDto }): void {
 		const user = event.value;
 		if (!this.formModel.assignedUsers.some((u) => u.id === user.id)) {
 			this.formModel.assignedUsers = [...this.formModel.assignedUsers, user];
@@ -83,7 +83,7 @@ export class CreateJobForm implements OnInit {
 		this.selectedUser = null;
 	}
 
-	removeUser(user: UserProfile): void {
+	removeUser(user: ProfileDto): void {
 		this.formModel.assignedUsers = this.formModel.assignedUsers.filter((u) => u.id !== user.id);
 	}
 

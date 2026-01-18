@@ -1,10 +1,8 @@
-import type { Tables } from '../supabase/database.types';
-
-export type UserProfile = Tables<'Profile'>;
+import type { ProfileDto } from '../types';
 
 export interface UserState {
-	items: UserProfile[];
-	selectedItem: UserProfile | null;
+	items: ProfileDto[];
+	selectedItem: ProfileDto | null;
 	loading: boolean;
 	error: string | null;
 }

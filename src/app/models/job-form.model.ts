@@ -1,4 +1,4 @@
-import type { UserProfile } from './user.model';
+import type { ProfileDto, CreateJobCommand } from '../types';
 
 export interface JobFormModel {
 	title: string;
@@ -6,12 +6,18 @@ export interface JobFormModel {
 	location: string;
 	startDate: Date | null;
 	endDate: Date | null;
-	assignedUsers: UserProfile[];
+	assignedUsers: ProfileDto[];
 }
 
-export type JobFormSubmitModel = Omit<JobFormModel, 'startDate' | 'endDate' | 'assignedUsers'> & {
-	created_by: string;
-	start_date: string;
-	end_date: string;
+/**
+ * Model for submitting job form data to the API.
+ * Derives core fields from CreateJobCommand and adds assigned_user_ids for batch assignment.
+ */
+export type JobFormSubmitModel = Pick<
+	CreateJobCommand,
+	'title' | 'description' | 'location' | 'created_by' | 'start_date' | 'end_date'
+> & {
+	description: string;
+	location: string;
 	assigned_user_ids: string[];
 };
