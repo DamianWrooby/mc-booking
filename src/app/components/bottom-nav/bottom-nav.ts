@@ -36,7 +36,7 @@ export class BottomNav {
 
   async logout() {
     this.closeMoreMenu();
-	
+
     await this.authService.signOutAndRedirect();
     this.messageService.add({
       severity: 'success',
