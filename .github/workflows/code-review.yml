@@ -42,10 +42,10 @@ jobs:
       - name: Run Claude Code Review
         run: |
           CLAUDE_CR_PROMPT=$(cat .ai/prompts/code-review.md)
-          git diff origin/master...HEAD \
-          | claude --append-system-prompt "$CLAUDE_CR_PROMPT" \
-               --stdin "Przeprowadź Code Review:" \
-          > claude-review.md
+    
+          echo "Przeprowadź Code Review:
+
+          $(git diff origin/master...HEAD)" | claude --append-system-prompt "$CLAUDE_CR_PROMPT"
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
 
