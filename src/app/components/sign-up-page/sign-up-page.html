@@ -1,15 +1,52 @@
 <app-layout>
-    <p-iftalabel>
-        <input pInputText id="email" [ngModel]="email()" (ngModelChange)="email.set($event)"
-            autocomplete="email" />
-        <label for="email">Email</label>
-    </p-iftalabel>
-    <p-iftalabel>
-        <input pInputText type="password" id="password" [ngModel]="password()" (ngModelChange)="password.set($event)"
-            autocomplete="off" />
-        <label for="password">Password</label>
-    </p-iftalabel>
-    <div class="card flex justify-center">
-        <p-button label="Zatwierdź" [loading]="loading()" [disabled]="buttonDisabled()" (onClick)="submit()" />
-    </div>
+	<p-iftalabel>
+		<input
+			pInputText
+			id="email"
+			[ngModel]="email()"
+			(ngModelChange)="email.set($event)"
+			autocomplete="email"
+		/>
+		<label for="email">Email</label>
+	</p-iftalabel>
+	<p-iftalabel>
+		<input
+			pInputText
+			type="password"
+			id="password"
+			[ngModel]="password()"
+			(ngModelChange)="password.set($event)"
+			autocomplete="new-password"
+		/>
+		<label for="password">Hasło</label>
+	</p-iftalabel>
+	@if (showMinLengthError()) {
+		<p-message severity="error" text="Hasło musi mieć co najmniej 6 znaków" />
+	}
+	<p-iftalabel>
+		<input
+			pInputText
+			type="password"
+			id="confirmPassword"
+			[ngModel]="confirmPassword()"
+			(ngModelChange)="confirmPassword.set($event)"
+			autocomplete="new-password"
+		/>
+		<label for="confirmPassword">Potwierdź hasło</label>
+	</p-iftalabel>
+	@if (showMismatchError()) {
+		<p-message severity="error" text="Hasła nie są identyczne" />
+	}
+	<div class="card flex justify-center">
+		<p-button
+			label="Zarejestruj się"
+			[loading]="loading()"
+			[disabled]="!canSubmit()"
+			(onClick)="submit()"
+		/>
+	</div>
+	<div class="w-full text-center">
+		<span class="text-sm">Masz już konto? </span>
+		<a routerLink="/login" class="text-sm text-primary hover:underline">Zaloguj się</a>
+	</div>
 </app-layout>

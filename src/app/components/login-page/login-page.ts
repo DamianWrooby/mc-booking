@@ -1,16 +1,16 @@
 import { Component, ChangeDetectionStrategy, signal, computed, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Router, RouterLink } from '@angular/router';
 
 import { InputTextModule } from 'primeng/inputtext';
 import { IftaLabelModule } from 'primeng/iftalabel';
 import { ButtonModule } from 'primeng/button';
 import { AuthService } from '../../services/auth/auth.service';
-import { Router } from '@angular/router';
 import { Layout } from '../layout/layout';
 
 @Component({
 	selector: 'app-login-page',
-	imports: [FormsModule, IftaLabelModule, InputTextModule, ButtonModule, Layout],
+	imports: [FormsModule, RouterLink, IftaLabelModule, InputTextModule, ButtonModule, Layout],
 	templateUrl: './login-page.html',
 	styleUrl: './login-page.css',
 	changeDetection: ChangeDetectionStrategy.OnPush,

@@ -6,6 +6,7 @@ export const routes: Routes = [
 	{
 		path: '',
 		component: MainPage,
+		canActivate: [authGuard],
 	},
 	{
 		path: 'login',
@@ -18,9 +19,30 @@ export const routes: Routes = [
 		loadComponent: () => import('./components/sign-up-page/sign-up-page').then((mod) => mod.SignUpPage),
 	},
 	{
+		path: 'forgot-password',
+		canActivate: [noAuthGuard],
+		loadComponent: () =>
+			import('./components/forgot-password-page/forgot-password-page').then(
+				(mod) => mod.ForgotPasswordPage
+			),
+	},
+	{
+		path: 'reset-password',
+		loadComponent: () =>
+			import('./components/reset-password-page/reset-password-page').then(
+				(mod) => mod.ResetPasswordPage
+			),
+	},
+	{
 		path: 'create-job',
 		canActivate: [authGuard, roleGuard],
 		loadComponent: () => import('./components/create-job-page/create-job-page').then((mod) => mod.CreateJobPage),
+		data: { allowedRoles: ['ADMIN', 'MANAGER'] }
+	},
+	{
+		path: 'edit-job/:id',
+		canActivate: [authGuard, roleGuard],
+		loadComponent: () => import('./components/edit-job-page/edit-job-page').then((mod) => mod.EditJobPage),
 		data: { allowedRoles: ['ADMIN', 'MANAGER'] }
 	},
 	{
@@ -38,5 +60,14 @@ export const routes: Routes = [
 		canActivate: [authGuard],
 		loadComponent: () =>
 			import('./components/my-account-page/my-account-page').then((mod) => mod.MyAccountPage),
+	},
+	{
+		path: 'users-management',
+		canActivate: [authGuard, roleGuard],
+		loadComponent: () =>
+			import('./components/users-management-page/users-management-page').then(
+				(mod) => mod.UsersManagementPage
+			),
+		data: { allowedRoles: ['ADMIN'] },
 	},
 ];
