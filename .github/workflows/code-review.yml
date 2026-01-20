@@ -41,13 +41,20 @@ jobs:
 
       - name: Run Claude Code Review
         run: |
-            CLAUDE_CR_PROMPT=$(cat .ai/prompts/code-review.md)
-            git diff origin/master...HEAD > diff.txt
+          CLAUDE_CR_PROMPT=$(cat .ai/prompts/code-review.md)
+          git diff origin/master...HEAD > diff.txt
 
-            claude --append-system-prompt "$CLAUDE_CR_PROMPT" \
-              --file diff.txt \
-              --print "Przeprowadź Code Review:" \
-              > claude-review.md
+          SESSION_ID=$(claude sessions create | jq -r '.id')
+
+          claude files upload --session-id "$SESSION_ID" diff.txt
+
+          claude \
+            --session-id "$SESSION_ID" \
+            --append-system-prompt "$CLAUDE_CR_PROMPT" \
+            --print "Przeprowadź Code Review:" \
+            > claude-review.md
+
+          claude sessions close "$SESSION_ID"
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
 
