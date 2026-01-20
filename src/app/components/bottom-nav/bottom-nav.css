@@ -1,0 +1,36 @@
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.nav-item {
+  color: var(--text-color-secondary);
+  transition: color 0.2s;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+}
+
+.nav-item:hover {
+  color: var(--text-color);
+}
+
+.nav-item.active {
+  color: var(--primary-color);
+}
+
+.nav-item.active i {
+  color: var(--primary-color);
+}
+
+.more-menu {
+  position: absolute;
+  bottom: 100%;
+  right: 0;
+  min-width: 12rem;
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+  background-color: var(--p-surface-900);
+  border: 1px solid var(--p-surface-700);
+  border-radius: 0.5rem;
+  z-index: 100;
+}

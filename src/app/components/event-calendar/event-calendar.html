@@ -1,0 +1,83 @@
+<p-datepicker
+	class="max-w-full"
+	[inline]="true"
+	[firstDayOfWeek]="1"
+	(onMonthChange)="onMonthChange($event)">
+	<ng-template #date let-date>
+		<div
+			class="day-cell"
+			[class.isEvent]="hasEvents(date)"
+			[class.isSelected]="isSelected(date)"
+			[style.background-color]="getEventColor(date)"
+			(click)="onDateClick(date)">
+			{{ date.day }}
+		</div>
+	</ng-template>
+</p-datepicker>
+
+<!-- Selected date details -->
+@if (selectedDate() && selectedDateJobs().length > 0) {
+	<p-card class="mt-4">
+		<ng-template #header>
+			<div class="p-4 pb-0">
+				<h3 class="text-lg font-semibold m-0">
+					{{ selectedDate() | date: 'd MMMM yyyy' : '' : 'pl-PL' }}
+				</h3>
+			</div>
+		</ng-template>
+		<div class="flex flex-col gap-3">
+			@for (job of selectedDateJobs(); track job.id) {
+				<div
+					class="p-3 rounded-lg"
+					[style.background-color]="getJobColor(job)">
+					<div class="font-semibold">{{ job.title }}</div>
+					<div class="text-sm text-surface-600 dark:text-surface-400">
+						{{ job.location || 'Brak lokalizacji' }}
+					</div>
+					<div class="text-sm text-surface-500 dark:text-surface-500">
+						@if (job.start_date === job.end_date) {
+							{{ job.start_date | date: 'd MMM yyyy' : '' : 'pl-PL' }}
+						} @else {
+							{{ job.start_date | date: 'd MMM' : '' : 'pl-PL' }} -
+							{{ job.end_date | date: 'd MMM yyyy' : '' : 'pl-PL' }}
+						}
+					</div>
+					@if (job.description) {
+						<div class="text-sm mt-2">{{ job.description }}</div>
+					}
+				</div>
+			}
+		</div>
+	</p-card>
+}
+
+<!-- Monthly events list -->
+<div class="mt-6">
+	<h3 class="text-lg font-semibold mb-3">Wydarzenia w tym miesiącu</h3>
+	@if (currentMonthJobs().length === 0) {
+		<p class="text-surface-500">Brak wydarzeń w tym miesiącu</p>
+	} @else {
+		<div class="flex flex-col gap-2">
+			@for (job of currentMonthJobs(); track job.id) {
+				<div
+					class="p-3 rounded-lg flex items-start gap-3"
+					[style.background-color]="getJobColor(job)">
+					<div class="flex-1">
+						<div class="font-semibold">{{ job.title }}</div>
+						<div class="text-sm text-surface-600 dark:text-surface-400">
+							{{ job.location || 'Brak lokalizacji' }}
+						</div>
+						<div class="text-sm text-surface-500">
+							@if (job.start_date === job.end_date) {
+								{{ job.start_date | date: 'd MMM yyyy' : '' : 'pl-PL' }}
+							} @else {
+								{{ job.start_date | date: 'd MMM' : '' : 'pl-PL' }} -
+								{{ job.end_date | date: 'd MMM yyyy' : '' : 'pl-PL' }}
+							}
+						</div>
+					</div>
+				</div>
+			}
+		</div>
+	}
+</div>

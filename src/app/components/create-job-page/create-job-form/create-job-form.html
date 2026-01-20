@@ -1,0 +1,79 @@
+<form (ngSubmit)="onSubmit(createJobForm)" #createJobForm="ngForm" class="align-left">
+	<fieldset class="mb-5">
+		<label for="title" class="font-bold block mb-1">Tytuł</label>
+		<input id="title" pInputText type="text" name="title" #titleModel="ngModel" [(ngModel)]="formModel.title"
+			class="w-full" required [invalid]="titleModel.invalid && (titleModel.touched || createJobForm.submitted)" />
+		@if (titleModel.invalid && titleModel.touched) {
+		<p-message severity="error" size="small" variant="simple">To pole jest wymagane</p-message>
+		}
+	</fieldset>
+
+	<fieldset class="mb-5">
+		<label for="description" class="font-bold block mb-1">Opis</label>
+		<textarea id="description" name="description" rows="5" col="30" pTextarea #descriptionModel="ngModel"
+			[(ngModel)]="formModel.description" class="w-full"
+			[invalid]="descriptionModel.invalid && (descriptionModel.touched || createJobForm.submitted)" required>
+		</textarea>
+		@if (descriptionModel.invalid && descriptionModel.touched) {
+		<p-message severity="error" size="small" variant="simple">To pole jest wymagane</p-message>
+		}
+	</fieldset>
+
+	<fieldset class="mb-5">
+		<label for="location" class="font-bold block mb-1">Miejsce</label>
+		<input id="location" name="location" pInputText type="text" #locationModel="ngModel"
+			[(ngModel)]="formModel.location" class="w-full" required
+			[invalid]="locationModel.invalid && (locationModel.touched || createJobForm.submitted)" />
+		@if (locationModel.invalid && locationModel.touched) {
+		<p-message severity="error" size="small" variant="simple">To pole jest wymagane</p-message>
+		}
+	</fieldset>
+
+	<fieldset class="mb-5">
+		<label for="startDate" class="font-bold block mb-1">Data rozpoczęcia</label>
+		<p-datepicker #startDateModel="ngModel" inputId="startDate" name="startDate" [(ngModel)]="formModel.startDate"
+			[invalid]="startDateModel.invalid && (startDateModel.touched || createJobForm.submitted)" [showTime]="true"
+			hourFormat="24" required></p-datepicker>
+		@if (startDateModel.invalid && startDateModel.touched) {
+		<p-message severity="error" size="small" variant="simple">To pole jest wymagane</p-message>
+		}
+	</fieldset>
+
+	<fieldset class="mb-5">
+		<label for="endDate" class="font-bold block mb-1">Data zakończenia</label>
+		<p-datepicker name="endDate" #endDateModel="ngModel" inputId="endDate" [(ngModel)]="formModel.endDate"
+			[invalid]="endDateModel.invalid && (endDateModel.touched || createJobForm.submitted)" [showTime]="true"
+			hourFormat="24" required></p-datepicker>
+		@if (endDateModel.invalid && endDateModel.touched) {
+		<p-message severity="error" size="small" variant="simple">To pole jest wymagane</p-message>
+		}
+	</fieldset>
+
+	<fieldset class="mb-5">
+		<label for="assignedUsers" class="font-bold block mb-1">Przypisani użytkownicy</label>
+		<p-autocomplete
+			inputId="assignedUsers"
+			[(ngModel)]="selectedUser"
+			name="assignedUsers"
+			[suggestions]="filteredUsers()"
+			(completeMethod)="filterUsers($event)"
+			(onSelect)="onUserSelect($event)"
+			[completeOnFocus]="true"
+			optionLabel="username"
+			placeholder="Wyszukaj użytkowników..."
+			class="w-full">
+		</p-autocomplete>
+		@if (formModel.assignedUsers.length > 0) {
+			<div class="mt-2 flex flex-col gap-1">
+				@for (user of formModel.assignedUsers; track user.id) {
+					<p-chip [label]="user.username" [removable]="true" (onRemove)="removeUser(user)" />
+				}
+			</div>
+		}
+	</fieldset>
+
+	<p-button type="submit" styleClass="w-48 mt-8 mx-auto" label="Utwórz"
+		severity="danger" 	[loading]="loading()"
+		[disabled]="!createJobForm.form.valid">
+	</p-button>
+</form>

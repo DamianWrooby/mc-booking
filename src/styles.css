@@ -1,1 +1,8 @@
-/* You can add global styles to this file, and also import other style files */
+@import 'primeicons/primeicons.css';
+@import 'tailwindcss';
+@import 'tailwindcss-primeui';
+
+body {
+	font-family: "Inter", -apple-system, "BlinkMacSystemFont", "Roboto", "Helvetica", "Arial", sans-serif;
+	font-weight: 400;
+}
