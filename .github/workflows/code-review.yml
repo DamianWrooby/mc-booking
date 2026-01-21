@@ -42,10 +42,41 @@ jobs:
       - name: Run Claude Code Review
         run: |
           CLAUDE_CR_PROMPT=$(cat .ai/prompts/code-review.md)
-    
-          echo "Przeprowadź Code Review:
-
-          $(git diff origin/master...HEAD)" | claude --append-system-prompt "$CLAUDE_CR_PROMPT"
+          
+          CHANGED_FILES=$(git diff --name-only origin/master...HEAD | \
+            grep -E '\.(ts|tsx|js|jsx|py|go|java|cs)$' | \
+            grep -v 'package-lock.json\|yarn.lock\|dist/\|build/' | \
+            head -15)
+          
+          if [ -z "$CHANGED_FILES" ]; then
+            echo "# Code Review" > claude-review.md
+            echo "" >> claude-review.md
+            echo "ℹ️ Brak plików do przeglądu." >> claude-review.md
+            exit 0
+          fi
+          
+          echo "# Code Review" > claude-review.md
+          echo "" >> claude-review.md
+          echo "Przegląd $(echo "$CHANGED_FILES" | wc -l) plików" >> claude-review.md
+          echo "" >> claude-review.md
+          
+          for file in $CHANGED_FILES; do
+            echo "Reviewing: $file"
+            FILE_DIFF=$(git diff origin/master...HEAD -- "$file")
+            DIFF_SIZE=${#FILE_DIFF}
+            
+            if [ "$DIFF_SIZE" -gt 50000 ]; then
+              echo "## 📄 $file" >> claude-review.md
+              echo "*Pominięto - plik zbyt duży ($DIFF_SIZE znaków)*" >> claude-review.md
+              echo "" >> claude-review.md
+              continue
+            fi
+            
+            echo "## 📄 $file" >> claude-review.md
+            echo "$FILE_DIFF" | claude --append-system-prompt "$CLAUDE_CR_PROMPT" >> claude-review.md 2>&1 || \
+              echo "*Błąd podczas review tego pliku*" >> claude-review.md
+            echo "" >> claude-review.md
+          done
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
 
