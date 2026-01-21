@@ -85,6 +85,20 @@ export class AuthService {
 		this.router.navigate(['login']);
 	}
 
+	async resetPasswordForEmail(email: string): Promise<void> {
+		const { error } = await supabase.auth.resetPasswordForEmail(email, {
+			redirectTo: `${window.location.origin}/reset-password`,
+		});
+		if (error) throw error;
+	}
+
+	async updatePassword(newPassword: string): Promise<void> {
+		const { error } = await supabase.auth.updateUser({
+			password: newPassword,
+		});
+		if (error) throw error;
+	}
+
 	private listenToAuthChanges() {
 		supabase.auth.onAuthStateChange((_event, session) => {
 			this._session.set(session);
@@ -125,6 +139,6 @@ export class AuthService {
 		}
 
 		this.userProfile.set(data);
-		return { success: true };
+		return { success: true};
 	}
 }
