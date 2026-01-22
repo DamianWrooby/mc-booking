@@ -1,8 +1,8 @@
 <app-layout>
 	@if (userProfile()?.role === 'MANAGER' || userProfile()?.role === 'ADMIN') {
-		<app-create-job-form
+		<app-job-form
 			(formSubmission)="createJob($event)"
-			[loading]="loading()"></app-create-job-form>
+			[loading]="loading()"></app-job-form>
 	} @else {
 		Brak uprawnień do tworzenia wydarzeń.
 	}
