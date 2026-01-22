@@ -1,4 +1,4 @@
-import { Component, inject, input, OnInit, output, signal } from '@angular/core';
+import { Component, computed, effect, inject, input, OnInit, output, signal } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { DatePickerModule } from 'primeng/datepicker';
 import { InputTextModule } from 'primeng/inputtext';
@@ -7,11 +7,11 @@ import { ButtonModule } from 'primeng/button';
 import { MessageModule } from 'primeng/message';
 import { AutoCompleteModule, AutoCompleteCompleteEvent } from 'primeng/autocomplete';
 import { ChipModule } from 'primeng/chip';
-import { JobFormModel, JobFormSubmitModel } from '../../../models/job-form.model';
-import { AuthService } from '../../../services/auth/auth.service';
-import { UserService } from '../../../services/user/user.service';
+import { JobFormModel, JobFormSubmitModel } from '../../models/job-form.model';
+import { AuthService } from '../../services/auth/auth.service';
+import { UserService } from '../../services/user/user.service';
 import { MessageService } from 'primeng/api';
-import type { ProfileDto } from '../../../types';
+import type { JobDto, ProfileDto } from '../../types';
 
 const initialFormValues: JobFormModel = {
 	title: '',
@@ -23,7 +23,7 @@ const initialFormValues: JobFormModel = {
 };
 
 @Component({
-	selector: 'app-create-job-form',
+	selector: 'app-job-form',
 	imports: [
 		FormsModule,
 		InputTextModule,
@@ -34,15 +34,16 @@ const initialFormValues: JobFormModel = {
 		AutoCompleteModule,
 		ChipModule,
 	],
-	templateUrl: './create-job-form.html',
-	styleUrl: './create-job-form.css',
+	templateUrl: './job-form.html',
 })
-export class CreateJobForm implements OnInit {
+export class JobForm implements OnInit {
 	private auth = inject(AuthService);
 	private userService = inject(UserService);
 	private messageService = inject(MessageService);
 
 	loading = input<boolean>(false);
+	existingJob = input<JobDto | null>(null);
+	existingAssignedUsers = input<ProfileDto[]>([]);
 	formSubmission = output<JobFormSubmitModel>();
 
 	formModel: JobFormModel = { ...initialFormValues };
@@ -53,6 +54,27 @@ export class CreateJobForm implements OnInit {
 	userProfile = this.auth.userProfile;
 	allUsers = this.userService.items;
 	usersLoading = this.userService.loading;
+
+	isEditMode = computed(() => this.existingJob() !== null);
+	submitButtonLabel = computed(() => (this.isEditMode() ? 'Zapisz' : 'Utwórz'));
+
+	constructor() {
+		effect(() => {
+			const job = this.existingJob();
+			const assignedUsers = this.existingAssignedUsers();
+
+			if (job) {
+				this.formModel = {
+					title: job.title,
+					description: job.description ?? '',
+					location: job.location ?? '',
+					startDate: job.start_date ? new Date(job.start_date) : null,
+					endDate: job.end_date ? new Date(job.end_date) : null,
+					assignedUsers: assignedUsers,
+				};
+			}
+		});
+	}
 
 	ngOnInit(): void {
 		this.userService.getAll();
@@ -89,11 +111,15 @@ export class CreateJobForm implements OnInit {
 
 	onSubmit(form: NgForm) {
 		this.validateForm(form);
-		
+
 		const formValues: JobFormModel = form.form.value;
 		const submitValues = this.mapFormValuesToSubmitValues(formValues);
 		this.formSubmission.emit(submitValues);
-		this.resetForm(form);
+
+		if (!this.isEditMode()) {
+			this.resetForm(form);
+		}
+
 		this.displaySuccessToast();
 	}
 
@@ -110,7 +136,10 @@ export class CreateJobForm implements OnInit {
 	}
 
 	private displaySuccessToast() {
-		this.messageService.add({ severity: 'success', summary: 'Sukces', detail: 'Wydarzenie dodano pomyślnie' });
+		const message = this.isEditMode()
+			? 'Wydarzenie zaktualizowano pomyślnie'
+			: 'Wydarzenie dodano pomyślnie';
+		this.messageService.add({ severity: 'success', summary: 'Sukces', detail: message });
 	}
 
 	private mapFormValuesToSubmitValues(formValues: JobFormModel): JobFormSubmitModel {

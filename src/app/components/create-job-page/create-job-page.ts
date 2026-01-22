@@ -1,9 +1,6 @@
 import { Component, computed, inject } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { DatePickerModule } from 'primeng/datepicker';
-import { ButtonModule } from 'primeng/button';
 import { Layout } from '../layout/layout';
-import { CreateJobForm } from './create-job-form/create-job-form';
+import { JobForm } from '../job-form/job-form';
 import { AuthService } from '../../services/auth/auth.service';
 import { JobService } from '../../services/job/job.service';
 import { JobAssignmentService } from '../../services/job-assignment/job-assignment.service';
@@ -11,7 +8,7 @@ import { JobFormSubmitModel } from '../../models/job-form.model';
 
 @Component({
 	selector: 'app-create-job-page',
-	imports: [Layout, ButtonModule, FormsModule, DatePickerModule, CreateJobForm],
+	imports: [Layout, JobForm],
 	templateUrl: './create-job-page.html',
 	styleUrl: './create-job-page.css',
 })
