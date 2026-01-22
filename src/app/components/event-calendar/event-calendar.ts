@@ -1,21 +1,27 @@
 import { Component, inject, signal, computed, effect, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { DatePipe } from '@angular/common';
+import { Router } from '@angular/router';
 import { DatePicker } from 'primeng/datepicker';
 import { Card } from 'primeng/card';
+import { ButtonModule } from 'primeng/button';
+import { TooltipModule } from 'primeng/tooltip';
 import { JobService } from '../../services/job/job.service';
+import { AuthService } from '../../services/auth/auth.service';
 import type { Tables } from '../../supabase/database.types';
 
 type Job = Tables<'Job'>;
 
 @Component({
   selector: 'app-event-calendar',
-  imports: [DatePicker, Card, DatePipe],
+  imports: [DatePicker, Card, ButtonModule, TooltipModule, DatePipe],
   templateUrl: './event-calendar.html',
   styleUrl: './event-calendar.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EventCalendar implements OnInit {
 	private jobService = inject(JobService);
+	private authService = inject(AuthService);
+	private router = inject(Router);
 
 	readonly currentDate = signal<Date>(new Date());
 	readonly selectedDate = signal<Date | null>(null);
@@ -85,6 +91,11 @@ export class EventCalendar implements OnInit {
 		);
 	});
 
+	readonly canEdit = computed(() => {
+		const profile = this.authService.userProfile();
+		return profile?.role === 'ADMIN' || profile?.role === 'MANAGER';
+	});
+
 	constructor() {
 		// Load jobs when the service items change
 		effect(() => {
@@ -150,6 +161,11 @@ export class EventCalendar implements OnInit {
 	getJobColor(job: Job): string {
 		const hash = this.hashString(job.id);
 		return this.eventColors[hash % this.eventColors.length];
+	}
+
+	editJob(jobId: string, event: Event): void {
+		event.stopPropagation();
+		this.router.navigate(['/edit-job', jobId]);
 	}
 
 	private hashString(str: string): number {

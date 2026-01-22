@@ -161,7 +161,7 @@ export class JobService implements HttpService<Job> {
 			});
 	}
 
-	update(id: string, changes: Partial<Job>): void {
+	update(id: string, changes: Partial<Job>, onSuccess?: (updatedJob: Job) => void): void {
 		this.setLoading(true);
 		this.resetError();
 
@@ -189,9 +189,11 @@ export class JobService implements HttpService<Job> {
 				this.state.update((state) => ({
 					...state,
 					items: state.items.map((j) => (j.id === id ? updatedJob : j)),
-					selectedJob: updatedJob,
+					selectedItem: updatedJob,
 					loading: false,
 				}));
+
+				onSuccess?.(updatedJob);
 			});
 	}
 
