@@ -86,6 +86,35 @@ export class UserService implements HttpService<ProfileDto> {
 			});
 	}
 
+	updateRole(userId: string, newRole: string, onSuccess?: () => void): void {
+		this.setLoading(true);
+		this.resetError();
+
+		from(supabase.from('Profile').update({ role: newRole }).eq('id', userId).select().single())
+			.pipe(
+				map(({ data, error }) => {
+					if (error) throw error;
+					return data;
+				}),
+				catchError(() => {
+					this.setError('Nie udało się zaktualizować roli');
+					return of(null);
+				})
+			)
+			.subscribe((updated) => {
+				if (!updated) {
+					this.setLoading(false);
+					return;
+				}
+				this.state.update((state) => ({
+					...state,
+					items: state.items.map((user) => (user.id === userId ? updated : user)),
+					loading: false,
+				}));
+				onSuccess?.();
+			});
+	}
+
 	private setLoading(loading: boolean) {
 		this.state.update((state) => ({ ...state, loading }));
 	}
