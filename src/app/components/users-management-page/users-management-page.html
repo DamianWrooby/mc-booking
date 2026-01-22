@@ -1,0 +1,61 @@
+<app-layout>
+  <h1 class="text-2xl font-bold mb-6">Zarządzanie użytkownikami</h1>
+
+  @if (loading()) {
+    <div class="flex justify-center items-center py-12">
+      <p-progressSpinner strokeWidth="4" />
+    </div>
+  } @else if (users().length === 0) {
+    <div class="text-center py-12 text-surface-500 dark:text-surface-400">
+      <i class="pi pi-users text-4xl mb-4"></i>
+      <p>Brak użytkowników do wyświetlenia</p>
+    </div>
+  } @else {
+    <p-table
+      [value]="users()"
+      [stripedRows]="true"
+      [tableStyle]="{ 'min-width': '50rem' }"
+      styleClass="p-datatable-sm"
+    >
+      <ng-template #header>
+        <tr>
+          <th>Nazwa użytkownika</th>
+          <th>Aktualna rola</th>
+          <th>Zmień rolę</th>
+        </tr>
+      </ng-template>
+      <ng-template #body let-user>
+        <tr>
+          <td>
+            <span class="font-medium">{{ user.username }}</span>
+            @if (isCurrentUser(user)) {
+              <span class="text-sm text-surface-500 dark:text-surface-400 ml-2">(Ty)</span>
+            }
+          </td>
+          <td>
+            <p-tag [value]="user.role" [severity]="getRoleSeverity(user.role)" />
+          </td>
+          <td>
+            @if (isCurrentUser(user)) {
+              <span class="text-sm text-surface-500 dark:text-surface-400">
+                Nie możesz zmienić własnej roli
+              </span>
+            } @else {
+              <p-select
+                [options]="roleOptions"
+                [ngModel]="user.role"
+                (ngModelChange)="onRoleChange(user, $event)"
+                optionLabel="label"
+                optionValue="value"
+                placeholder="Wybierz rolę"
+                class="w-full md:w-40"
+              />
+            }
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  }
+
+  <p-confirmDialog />
+</app-layout>
