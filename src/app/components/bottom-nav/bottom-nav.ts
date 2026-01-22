@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, inject, signal } from '@angular/core';
+import { Component, ChangeDetectionStrategy, computed, inject, signal } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
@@ -19,6 +19,7 @@ export class BottomNav {
   private messageService = inject(MessageService);
 
   isAuthenticated = this.authService.isAuthenticated;
+  isAdmin = computed(() => this.authService.userProfile()?.role === 'ADMIN');
   moreMenuOpen = signal(false);
 
   toggleMoreMenu() {

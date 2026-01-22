@@ -57,6 +57,16 @@
               class="p-button-text justify-start w-full"
               (click)="navigateTo('/my-account')"
             ></button>
+            @if (isAdmin()) {
+              <div class="h-px my-1 bg-surface-200 dark:bg-surface-700"></div>
+              <button
+                pButton
+                label="Użytkownicy"
+                icon="pi pi-users"
+                class="p-button-text justify-start w-full"
+                (click)="navigateTo('/users-management')"
+              ></button>
+            }
             <div class="h-px my-1 bg-surface-200 dark:bg-surface-700"></div>
             <button
               pButton
