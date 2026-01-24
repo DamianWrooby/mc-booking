@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, inject, OnInit } from '@angular/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { SelectModule } from 'primeng/select';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
@@ -20,7 +19,6 @@ interface RoleOption {
   selector: 'app-users-management-page',
   imports: [
     Layout,
-    TableModule,
     TagModule,
     SelectModule,
     ConfirmDialogModule,
