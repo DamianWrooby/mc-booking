@@ -14,6 +14,12 @@
             Zapomniałeś hasła?
         </a>
     </div>
+    <div class="w-full text-center">
+        <span class="text-sm">Nie masz konta? </span>
+        <a routerLink="/sign-up" class="text-sm text-primary hover:underline">
+            Zarejestruj się
+        </a>
+    </div>
     <div class="card flex justify-center">
         <p-button label="Zatwierdź" [loading]="loading()" [disabled]="buttonDisabled()" (onClick)="submit()" />
     </div>

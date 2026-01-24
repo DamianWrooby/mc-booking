@@ -51,13 +51,7 @@ export class SignUpPage {
 			this.loading.set(true);
 			await this.auth.signUp({ email: this.email(), password: this.password() });
 
-			this.messageService.add({
-				severity: 'success',
-				summary: 'Sukces',
-				detail: 'Konto zostało utworzone. Sprawdź email, aby potwierdzić rejestrację.',
-			});
-
-			this.router.navigate(['/login']);
+			this.router.navigate(['/login'], { state: { signupSuccess: true } });
 		} catch (err) {
 			console.error('Sign up failed:', err);
 			this.messageService.add({
