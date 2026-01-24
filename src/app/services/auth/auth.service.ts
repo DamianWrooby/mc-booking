@@ -4,6 +4,7 @@ import { supabase } from '../../supabase/supabase-client';
 import { isEqual } from 'lodash';
 import type { Tables } from '../../supabase/database.types';
 import { Router } from '@angular/router';
+import { ErrorService } from '../error/error.service';
 
 @Injectable({
 	providedIn: 'root',
@@ -24,6 +25,7 @@ export class AuthService {
 
 	private _session: WritableSignal<AuthSession | null> = signal(null, { equal: isEqual });
 	private router = inject(Router);
+	private errorService = inject(ErrorService);
 
 	constructor() {
 		this.getSession();
@@ -110,7 +112,13 @@ export class AuthService {
 
 		let { data, error } = await supabase.from('Profile').select('*').eq('id', id).single();
 
-		if (error) console.error('Cannot retrieve user profile');
+		if (error) {
+			this.errorService.showError('Cannot retrieve user profile');
+			this.signOut();
+			this.router.navigate(['login']);
+			return;
+		} 
+
 		this.userProfile.set(data);
 	}
 
