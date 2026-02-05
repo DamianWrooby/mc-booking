@@ -1,6 +1,7 @@
-import { Component, ChangeDetectionStrategy, inject, afterNextRender, signal, OnInit } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, signal, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { AuthService } from '../../services/auth/auth.service';
 import { ErrorService } from '../../services/error/error.service';
 import { Layout } from '../layout/layout';
 
@@ -23,6 +24,7 @@ import { Layout } from '../layout/layout';
 })
 export class ConfirmEmailPage implements OnInit {
 	private readonly router = inject(Router);
+	private readonly authService = inject(AuthService);
 	private readonly errorService = inject(ErrorService);
 	loading = signal(true);
 
@@ -30,7 +32,7 @@ export class ConfirmEmailPage implements OnInit {
 		this.handleConfirmation();
 	}
 
-	private handleConfirmation(): void {
+	private async handleConfirmation(): Promise<void> {
 		const hash = window.location.hash.substring(1);
 		const params = new URLSearchParams(hash);
 		const type = params.get('type');
@@ -40,7 +42,13 @@ export class ConfirmEmailPage implements OnInit {
 
 		if (hash.includes('error')) {
 			this.errorService.showError('Nie można potwierdzić adresu email. Spróbuj ponownie za chwilę.');
+			this.loading.set(false);
+			return;
 		}
+
+		// Sign out to clear the auto-session created by Supabase from the URL tokens
+		// This ensures the user is redirected to login page to authenticate manually
+		await this.authService.signOut();
 
 		if (type === 'signup') {
 			this.router.navigate(['/login'], {
