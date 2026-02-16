@@ -1,0 +1,14 @@
+@if (isAuthenticated()) {
+<div class="notification-bell">
+	<p-button class="overflow-visible" [text]="true" (onClick)="togglePopover($event)" aria-label="Powiadomienia">
+		<i class="pi pi-bell text-xl"></i>
+		@if (badgeValue(); as badge) {
+		<p-badge [value]="badge" severity="danger" class="notification-badge" />
+		}
+	</p-button>
+
+	<p-popover #popover [dismissable]="true">
+		<app-notification-panel (closePanel)="closePopover()" />
+	</p-popover>
+</div>
+}

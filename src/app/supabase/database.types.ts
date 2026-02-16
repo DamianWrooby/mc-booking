@@ -221,27 +221,40 @@ export type Database = {
           created_at: string
           id: string
           is_read: boolean
+          job_id: string | null
           message: string
           title: string
+          type: string | null
           user_id: string
         }
         Insert: {
           created_at?: string
           id?: string
           is_read?: boolean
+          job_id?: string | null
           message: string
           title: string
+          type?: string | null
           user_id: string
         }
         Update: {
           created_at?: string
           id?: string
           is_read?: boolean
+          job_id?: string | null
           message?: string
           title?: string
+          type?: string | null
           user_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "Notification_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "Job"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "Notification_user_id_fkey"
             columns: ["user_id"]
@@ -259,7 +272,7 @@ export type Database = {
         }
         Insert: {
           id?: string
-          role?: string
+          role: string
           username: string
         }
         Update: {
@@ -269,12 +282,47 @@ export type Database = {
         }
         Relationships: []
       }
+      PushSubscription: {
+        Row: {
+          auth: string
+          created_at: string | null
+          endpoint: string
+          id: string
+          p256dh: string
+          user_id: string
+        }
+        Insert: {
+          auth: string
+          created_at?: string | null
+          endpoint: string
+          id?: string
+          p256dh: string
+          user_id: string
+        }
+        Update: {
+          auth?: string
+          created_at?: string | null
+          endpoint?: string
+          id?: string
+          p256dh?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "PushSubscription_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "Profile"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      is_manager_or_admin: { Args: never; Returns: boolean }
     }
     Enums: {
       [_ in never]: never

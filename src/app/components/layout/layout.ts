@@ -3,10 +3,11 @@ import { RouterModule } from '@angular/router';
 import { Toast } from 'primeng/toast';
 import { BottomNav } from '../bottom-nav/bottom-nav';
 import { CreateJobFab } from '../create-job-fab/create-job-fab';
+import { NotificationBell } from '../notification-bell/notification-bell';
 
 @Component({
 	selector: 'app-layout',
-	imports: [RouterModule, Toast, BottomNav, CreateJobFab],
+	imports: [RouterModule, Toast, BottomNav, CreateJobFab, NotificationBell],
 	templateUrl: './layout.html',
 	styleUrl: './layout.css',
 	host: {
