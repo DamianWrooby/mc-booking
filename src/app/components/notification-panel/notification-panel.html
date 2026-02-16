@@ -1,0 +1,47 @@
+<div class="notification-panel">
+	<div class="panel-header">
+		<span class="font-semibold">Powiadomienia</span>
+		@if (unreadCount() > 0) {
+			<p-button
+				label="Oznacz wszystkie jako przeczytane"
+				[text]="true"
+				size="small"
+				(onClick)="markAllAsRead()"
+			/>
+		}
+	</div>
+
+	<div class="panel-content">
+		@if (loading()) {
+			<div class="empty-state">
+				<i class="pi pi-spin pi-spinner text-2xl"></i>
+				<span>Ładowanie...</span>
+			</div>
+		} @else if (items().length === 0) {
+			<div class="empty-state">
+				<i class="pi pi-bell-slash text-3xl text-surface-400"></i>
+				<span class="text-surface-500">Brak powiadomień</span>
+			</div>
+		} @else {
+			@for (notification of items(); track notification.id) {
+				<button
+					class="notification-item"
+					[class.unread]="!notification.is_read"
+					(click)="onNotificationClick(notification)"
+				>
+					<div class="notification-icon" [class]="getIconColor(notification.type)">
+						<i [class]="getIcon(notification.type)"></i>
+					</div>
+					<div class="notification-content">
+						<span class="notification-title">{{ notification.title }}</span>
+						<span class="notification-message">{{ notification.message }}</span>
+						<span class="notification-time">{{ notification.created_at | date: 'dd.MM.yyyy HH:mm' }}</span>
+					</div>
+					@if (!notification.is_read) {
+						<div class="unread-indicator"></div>
+					}
+				</button>
+			}
+		}
+	</div>
+</div>

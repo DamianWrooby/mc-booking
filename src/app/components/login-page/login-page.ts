@@ -14,6 +14,7 @@ import { AuthError } from '@supabase/supabase-js';
 
 interface NavigationState {
 	signupSuccess?: boolean;
+	emailConfirmed?: boolean;
 }
 
 @Component({
@@ -37,12 +38,22 @@ export class LoginPage {
 
 	constructor() {
 		afterNextRender(() => {
-			const { signupSuccess } = this.location.getState() as NavigationState;
+			const { signupSuccess, emailConfirmed } = this.location.getState() as NavigationState;
+
 			if (signupSuccess) {
 				this.messageService.add({
 					severity: 'success',
 					summary: 'Sukces',
 					detail: 'Konto zostało utworzone. Sprawdź email, aby potwierdzić rejestrację.',
+				});
+				history.replaceState({}, '');
+			}
+
+			if (emailConfirmed) {
+				this.messageService.add({
+					severity: 'success',
+					summary: 'Sukces',
+					detail: 'Email został potwierdzony. Możesz się teraz zalogować.',
 				});
 				history.replaceState({}, '');
 			}

@@ -34,6 +34,13 @@ export const routes: Routes = [
 			),
 	},
 	{
+		path: 'confirm-email',
+		loadComponent: () =>
+			import('./components/confirm-email-page/confirm-email-page').then(
+				(mod) => mod.ConfirmEmailPage
+			),
+	},
+	{
 		path: 'create-job',
 		canActivate: [authGuard, roleGuard],
 		loadComponent: () => import('./components/create-job-page/create-job-page').then((mod) => mod.CreateJobPage),

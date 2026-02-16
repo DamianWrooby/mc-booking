@@ -1,0 +1,121 @@
+.notification-panel {
+	display: flex;
+	flex-direction: column;
+	width: 20rem;
+	max-width: calc(100vw - 2rem);
+}
+
+.panel-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 0.75rem 1rem;
+	border-bottom: 1px solid var(--p-surface-200);
+}
+
+:host-context(.mc-booking-dark) .panel-header {
+	border-bottom-color: var(--p-surface-700);
+}
+
+.panel-content {
+	display: flex;
+	flex-direction: column;
+	max-height: 24rem;
+	overflow-y: auto;
+}
+
+.empty-state {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 0.5rem;
+	padding: 2rem 1rem;
+}
+
+.notification-item {
+	display: flex;
+	align-items: flex-start;
+	gap: 0.75rem;
+	padding: 0.75rem 1rem;
+	border: none;
+	background: transparent;
+	text-align: left;
+	cursor: pointer;
+	transition: background-color 0.15s;
+	width: 100%;
+}
+
+.notification-item:hover {
+	background-color: var(--p-surface-100);
+}
+
+:host-context(.mc-booking-dark) .notification-item:hover {
+	background-color: var(--p-surface-800);
+}
+
+.notification-item.unread {
+	background-color: var(--p-primary-50);
+}
+
+:host-context(.mc-booking-dark) .notification-item.unread {
+	background-color: var(--p-surface-800);
+}
+
+.notification-icon {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 2rem;
+	height: 2rem;
+	flex-shrink: 0;
+	font-size: 1rem;
+}
+
+.notification-content {
+	display: flex;
+	flex-direction: column;
+	gap: 0.125rem;
+	flex: 1;
+	min-width: 0;
+}
+
+.notification-title {
+	font-weight: 600;
+	font-size: 0.875rem;
+	color: var(--p-surface-900);
+}
+
+:host-context(.mc-booking-dark) .notification-title {
+	color: var(--p-surface-0);
+}
+
+.notification-message {
+	font-size: 0.8125rem;
+	color: var(--p-surface-600);
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+:host-context(.mc-booking-dark) .notification-message {
+	color: var(--p-surface-400);
+}
+
+.notification-time {
+	font-size: 0.75rem;
+	color: var(--p-surface-400);
+}
+
+:host-context(.mc-booking-dark) .notification-time {
+	color: var(--p-surface-500);
+}
+
+.unread-indicator {
+	width: 0.5rem;
+	height: 0.5rem;
+	border-radius: 50%;
+	background-color: var(--p-primary-500);
+	flex-shrink: 0;
+	margin-top: 0.25rem;
+}

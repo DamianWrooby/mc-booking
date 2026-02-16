@@ -42,5 +42,32 @@
 				(onClick)="submit()"
 			/>
 		</div>
+
+		@if (pushService.isSupported()) {
+			<div class="flex flex-col gap-4 p-4 bg-surface-50 dark:bg-surface-800 rounded-lg border border-surface-200 dark:border-surface-700">
+				<h2 class="text-lg font-semibold">Powiadomienia push</h2>
+
+				<div class="flex items-center justify-between">
+					<div class="flex flex-col gap-1">
+						<span class="font-medium">Powiadomienia push</span>
+						<span class="text-sm text-surface-500 dark:text-surface-400">
+							{{ pushPermissionText() }}
+						</span>
+					</div>
+					<p-toggleSwitch
+						[ngModel]="pushService.isSubscribed()"
+						(ngModelChange)="togglePushNotifications()"
+						[disabled]="pushService.loading() || pushService.permissionState() === 'denied'"
+					/>
+				</div>
+
+				@if (pushService.permissionState() === 'denied') {
+					<p-message
+						severity="warn"
+						text="Powiadomienia push są zablokowane. Aby je włączyć, zmień ustawienia przeglądarki."
+					></p-message>
+				}
+			</div>
+		}
 	</div>
 </app-layout>
