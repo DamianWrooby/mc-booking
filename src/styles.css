@@ -6,3 +6,9 @@ body {
 	font-family: "Inter", -apple-system, "BlinkMacSystemFont", "Roboto", "Helvetica", "Arial", sans-serif;
 	font-weight: 400;
 }
+
+.mc-booking-dark .p-popover {
+	--p-popover-background: var(--p-surface-900);
+	--p-popover-border-color: var(--p-surface-700);
+	--p-popover-color: var(--p-surface-0);
+}

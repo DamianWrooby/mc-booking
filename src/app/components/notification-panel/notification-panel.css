@@ -5,16 +5,29 @@
 	max-width: calc(100vw - 2rem);
 }
 
+:host-context(.mc-booking-dark) .notification-panel {
+	background-color: var(--p-surface-900);
+}
+
 .panel-header {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-	padding: 0.75rem 1rem;
+	gap: 0.5rem;
+	padding: 0.5rem 1rem;
 	border-bottom: 1px solid var(--p-surface-200);
 }
 
 :host-context(.mc-booking-dark) .panel-header {
 	border-bottom-color: var(--p-surface-700);
+	background-color: var(--p-surface-900);
+}
+
+.panel-header :deep(.p-button) {
+	padding: 0.2rem 0.4rem;
+	font-size: 0.7rem;
+	line-height: 1.2;
+	white-space: nowrap;
 }
 
 .panel-content {
@@ -22,6 +35,10 @@
 	flex-direction: column;
 	max-height: 24rem;
 	overflow-y: auto;
+}
+
+:host-context(.mc-booking-dark) .panel-content {
+	background-color: var(--p-surface-900);
 }
 
 .empty-state {
@@ -44,6 +61,10 @@
 	cursor: pointer;
 	transition: background-color 0.15s;
 	width: 100%;
+}
+
+:host-context(.mc-booking-dark) .notification-item {
+	background-color: var(--p-surface-900);
 }
 
 .notification-item:hover {
