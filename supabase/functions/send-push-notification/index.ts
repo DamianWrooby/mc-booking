@@ -191,11 +191,22 @@ async function signJwt(
 	const payloadB64 = base64UrlEncode(JSON.stringify(payload));
 	const unsignedToken = `${headerB64}.${payloadB64}`;
 
-	const privateKeyBytes = base64UrlDecode(privateKeyBase64);
+	const rawKeyBytes = base64UrlDecode(privateKeyBase64);
+
+	// Raw VAPID private key is 32 bytes. Wrap it in PKCS#8 DER structure for P-256.
+	// PKCS#8 header for EC P-256 private key (RFC 5958 / RFC 5480)
+	const pkcs8Header = new Uint8Array([
+		0x30, 0x41, 0x02, 0x01, 0x00, 0x30, 0x13, 0x06, 0x07, 0x2a, 0x86, 0x48, 0xce, 0x3d, 0x02,
+		0x01, 0x06, 0x08, 0x2a, 0x86, 0x48, 0xce, 0x3d, 0x03, 0x01, 0x07, 0x04, 0x27, 0x30, 0x25,
+		0x02, 0x01, 0x01, 0x04, 0x20,
+	]);
+	const pkcs8Key = new Uint8Array(pkcs8Header.length + rawKeyBytes.length);
+	pkcs8Key.set(pkcs8Header);
+	pkcs8Key.set(rawKeyBytes, pkcs8Header.length);
 
 	const key = await crypto.subtle.importKey(
 		'pkcs8',
-		privateKeyBytes,
+		pkcs8Key,
 		{ name: 'ECDSA', namedCurve: 'P-256' },
 		false,
 		['sign']
