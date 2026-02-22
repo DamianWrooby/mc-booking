@@ -54,10 +54,13 @@
 							{{ pushPermissionText() }}
 						</span>
 					</div>
-					<p-toggleSwitch
-						[ngModel]="pushService.isSubscribed()"
-						(ngModelChange)="togglePushNotifications()"
-						[disabled]="pushService.loading() || pushService.permissionState() === 'denied'"
+					<p-button
+						[label]="pushService.isSubscribed() ? 'Wyłącz' : 'Włącz'"
+						[severity]="pushService.isSubscribed() ? 'secondary' : 'primary'"
+						[loading]="pushService.loading()"
+						[disabled]="pushService.permissionState() === 'denied'"
+						size="small"
+						(onClick)="togglePushNotifications()"
 					/>
 				</div>
 
