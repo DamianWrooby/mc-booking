@@ -62,14 +62,16 @@ Deno.serve(async (req) => {
 		}
 
 		const pushPayload = JSON.stringify({
-			title: notification.title,
-			body: notification.message,
-			icon: '/icons/icon-192x192.png',
-			badge: '/icons/icon-72x72.png',
-			data: {
-				notificationId: notification.id,
-				jobId: notification.job_id,
-				type: notification.type,
+			notification: {
+				title: notification.title,
+				body: notification.message,
+				icon: '/icons/icon-192x192.png',
+				badge: '/icons/icon-72x72.png',
+				data: {
+					notificationId: notification.id,
+					jobId: notification.job_id,
+					type: notification.type,
+				},
 			},
 		});
 
