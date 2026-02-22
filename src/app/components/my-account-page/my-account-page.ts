@@ -3,7 +3,6 @@ import { FormsModule } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { MessageModule } from 'primeng/message';
-import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { MessageService } from 'primeng/api';
 import { Layout } from '../layout/layout';
 import { AuthService } from '../../services/auth/auth.service';
@@ -11,7 +10,7 @@ import { PushNotificationService } from '../../services/push-notification/push-n
 
 @Component({
 	selector: 'app-my-account-page',
-	imports: [Layout, FormsModule, InputTextModule, ButtonModule, MessageModule, ToggleSwitchModule],
+	imports: [Layout, FormsModule, InputTextModule, ButtonModule, MessageModule],
 	templateUrl: './my-account-page.html',
 	styleUrl: './my-account-page.css',
 	changeDetection: ChangeDetectionStrategy.OnPush,
