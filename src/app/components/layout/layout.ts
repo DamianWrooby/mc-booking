@@ -14,4 +14,6 @@ import { NotificationBell } from '../notification-bell/notification-bell';
 		class: 'mc-booking-dark w-full pt-20 p-5 pb-20 flex flex-col justify-center items-center gap-2',
 	},
 })
-export class Layout {}
+export class Layout {
+	readonly toastBreakpoints = { '640px': { width: '100%', right: '0', left: '0' } };
+}
