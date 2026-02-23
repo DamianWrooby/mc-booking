@@ -2,6 +2,11 @@
 @import 'tailwindcss';
 @import 'tailwindcss-primeui';
 
+html,
+body {
+	background-image: linear-gradient(25deg, #0f172a, #075985);
+}
+
 body {
 	font-family: "Inter", -apple-system, "BlinkMacSystemFont", "Roboto", "Helvetica", "Arial", sans-serif;
 	font-weight: 400;
