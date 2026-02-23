@@ -43,6 +43,7 @@
         <button
           (click)="toggleMoreMenu()"
           class="flex items-center justify-center w-full h-full nav-item"
+          [class.active]="isMoreActive()"
           pRipple
         >
           <i class="pi pi-ellipsis-h text-2xl"></i>

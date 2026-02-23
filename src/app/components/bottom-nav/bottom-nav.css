@@ -2,6 +2,15 @@
   padding-bottom: env(safe-area-inset-bottom);
 }
 
+@keyframes nav-pill-in {
+  from {
+    box-shadow: inset 0 3px 0 transparent;
+  }
+  to {
+    box-shadow: inset 0 3px 0 var(--p-primary-color);
+  }
+}
+
 .nav-item {
   color: var(--text-color-secondary);
   transition: color 0.2s;
@@ -15,11 +24,13 @@
 }
 
 .nav-item.active {
-  color: var(--primary-color);
+  color: var(--p-primary-color);
+  box-shadow: inset 0 3px 0 var(--p-primary-color);
+  animation: nav-pill-in 0.15s ease forwards;
 }
 
 .nav-item.active i {
-  color: var(--primary-color);
+  color: var(--p-primary-color);
 }
 
 .more-menu {

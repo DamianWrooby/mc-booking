@@ -1,5 +1,7 @@
 import { Component, ChangeDetectionStrategy, computed, inject, signal } from '@angular/core';
-import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { filter, map, startWith } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { RippleModule } from 'primeng/ripple';
@@ -21,6 +23,19 @@ export class BottomNav {
   isAuthenticated = this.authService.isAuthenticated;
   isAdmin = computed(() => this.authService.userProfile()?.role === 'ADMIN');
   moreMenuOpen = signal(false);
+
+  private currentUrl = toSignal(
+    this.router.events.pipe(
+      filter((e) => e instanceof NavigationEnd),
+      map((e) => (e as NavigationEnd).url),
+      startWith(this.router.url),
+    ),
+  );
+
+  isMoreActive = computed(() => {
+    const url = this.currentUrl() ?? '';
+    return url.startsWith('/my-account') || url.startsWith('/users-management');
+  });
 
   toggleMoreMenu() {
     this.moreMenuOpen.update((v) => !v);
