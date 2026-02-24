@@ -4,6 +4,7 @@
 
 html,
 body {
+	background-color: #0f172a;
 	background-image: linear-gradient(25deg, #0f172a, #075985);
 }
 
