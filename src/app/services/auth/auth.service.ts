@@ -36,9 +36,9 @@ export class AuthService {
 				this.getUserProfile(this.userData()?.id);
 			}
 		});
-		effect(() => {
-			console.log(`The current session is:`, this._session());
-		});
+		// effect(() => {
+		// 	console.log(`The current session is:`, this._session());
+		// });
 	}
 
 	authChanges(callback: (event: AuthChangeEvent, session: Session | null) => void) {

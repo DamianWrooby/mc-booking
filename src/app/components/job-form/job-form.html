@@ -33,7 +33,7 @@
 		<label for="startDate" class="font-bold block mb-1">Data rozpoczęcia</label>
 		<p-datepicker #startDateModel="ngModel" inputId="startDate" name="startDate" [(ngModel)]="formModel.startDate"
 			[invalid]="startDateModel.invalid && (startDateModel.touched || jobForm.submitted)" [showTime]="true"
-			hourFormat="24" required></p-datepicker>
+			hourFormat="24" required (ngModelChange)="onDateChange()"></p-datepicker>
 		@if (startDateModel.invalid && startDateModel.touched) {
 		<p-message severity="error" size="small" variant="simple">To pole jest wymagane</p-message>
 		}
@@ -43,7 +43,7 @@
 		<label for="endDate" class="font-bold block mb-1">Data zakończenia</label>
 		<p-datepicker name="endDate" #endDateModel="ngModel" inputId="endDate" [(ngModel)]="formModel.endDate"
 			[invalid]="endDateModel.invalid && (endDateModel.touched || jobForm.submitted)" [showTime]="true"
-			hourFormat="24" required></p-datepicker>
+			hourFormat="24" required (ngModelChange)="onDateChange()"></p-datepicker>
 		@if (endDateModel.invalid && endDateModel.touched) {
 		<p-message severity="error" size="small" variant="simple">To pole jest wymagane</p-message>
 		}
@@ -62,6 +62,16 @@
 			optionLabel="username"
 			placeholder="Wyszukaj użytkowników..."
 			class="w-full">
+			<ng-template #item let-user>
+				<div class="flex items-center gap-2">
+					@if (datesSelected()) {
+						<span class="inline-block w-2 h-2 rounded-full flex-shrink-0"
+							[class]="availableUserIdSet().has(user.id) ? 'bg-green-500' : 'bg-red-500'">
+						</span>
+					}
+					<span>{{ user.username }}</span>
+				</div>
+			</ng-template>
 		</p-autocomplete>
 		@if (formModel.assignedUsers.length > 0) {
 			<div class="mt-2 flex flex-col gap-1">

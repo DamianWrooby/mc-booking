@@ -7,14 +7,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { Layout } from '../layout/layout';
 import { AuthService } from '../../services/auth/auth.service';
 import { AvailabilityService } from '../../services/availability/availability.service';
-
-const pad = (n: number) => String(n).padStart(2, '0');
-const toLocalDateStr = (d: Date) =>
-	`${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
-const parseLocalDate = (str: string) => {
-	const [year, month, day] = str.split('T')[0].split('-').map(Number);
-	return new Date(year, month - 1, day);
-};
+import { toLocalDateStr, parseLocalDate, pad } from '../../utils/date.utils';
 
 @Component({
 	selector: 'app-availability-page',

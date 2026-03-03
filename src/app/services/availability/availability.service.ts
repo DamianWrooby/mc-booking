@@ -7,6 +7,7 @@ import { AuthService } from '../auth/auth.service';
 import { supabase } from '../../supabase/supabase-client';
 import type { Tables } from '../../supabase/database.types';
 import type { CreateAvailabilityCommand } from '../../types/command.types';
+import { toLocalDateStr } from '../../utils/date.utils';
 
 type Availability = Tables<'Availability'>;
 
@@ -30,10 +31,12 @@ export class AvailabilityService {
 	private auth = inject(AuthService);
 
 	private readonly state = signal<AvailabilityState>(initialState);
+	private readonly _rangeItems = signal<Availability[]>([]);
 
 	readonly items = computed(() => this.state().items);
 	readonly loading = computed(() => this.state().loading);
 	readonly error = computed(() => this.state().error);
+	readonly rangeItems = computed(() => this._rangeItems());
 
 	constructor() {
 		effect(() => {
@@ -104,6 +107,34 @@ export class AvailabilityService {
 					loading: false,
 				}));
 			});
+	}
+
+	/** Fetches all availability records that fully cover the given date range (date_from ≤ start AND date_to ≥ end). */
+	getAvailabilitiesForRange(startDate: Date, endDate: Date): void {
+		const startStr = toLocalDateStr(startDate);
+		const endStr = toLocalDateStr(endDate);
+
+		from(
+			supabase
+				.from('Availability')
+				.select('*')
+				.lte('date_from', startStr)
+				.gte('date_to', endStr)
+		)
+			.pipe(
+				map(({ data, error }) => {
+					if (error) throw error;
+					return data ?? [];
+				}),
+				catchError(() => of([]))
+			)
+			.subscribe((items) => {
+				this._rangeItems.set(items);
+			});
+	}
+
+	clearRangeAvailabilities(): void {
+		this._rangeItems.set([]);
 	}
 
 	delete(id: string): void {
