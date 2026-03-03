@@ -34,7 +34,11 @@ export class BottomNav {
 
   isMoreActive = computed(() => {
     const url = this.currentUrl() ?? '';
-    return url.startsWith('/my-account') || url.startsWith('/users-management');
+    return (
+      url.startsWith('/my-account') ||
+      url.startsWith('/users-management') ||
+      url.startsWith('/availability')
+    );
   });
 
   toggleMoreMenu() {

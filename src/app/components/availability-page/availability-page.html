@@ -1,0 +1,86 @@
+<app-layout>
+	<div class="w-full max-w-2xl flex flex-col gap-6">
+		<h1 class="text-2xl font-bold">Moja dostępność</h1>
+
+		<!-- Month overview calendar -->
+		<div class="flex justify-center">
+			<p-datepicker inline [defaultDate]="today">
+				<ng-template pTemplate="date" let-date>
+					<span
+						class="w-8 h-8 flex items-center justify-center rounded-full transition-colors duration-150"
+						[class.bg-green-500]="isDateAvailable(date)"
+						[class.text-white]="isDateAvailable(date)"
+					>{{ date.day }}</span>
+				</ng-template>
+			</p-datepicker>
+		</div>
+
+		<!-- Add availability form -->
+		<div class="bg-surface-100 dark:bg-surface-800 rounded-xl p-5 flex flex-col gap-4">
+			<h2 class="text-lg font-semibold">Dodaj dostępność</h2>
+
+			<fieldset>
+				<label class="font-bold block mb-1">Zakres dat</label>
+				<p-datepicker
+					selectionMode="range"
+					[(ngModel)]="dateRange"
+					dateFormat="dd.mm.yy"
+					[showIcon]="true"
+					class="w-full"
+				></p-datepicker>
+			</fieldset>
+
+			<fieldset>
+				<label class="font-bold block mb-1">Uwaga (opcjonalnie)</label>
+				<input
+					pInputText
+					type="text"
+					[(ngModel)]="note"
+					placeholder="np. tylko wieczory"
+					class="w-full"
+				/>
+			</fieldset>
+
+			<p-button
+				label="Dodaj"
+				icon="pi pi-plus"
+				[loading]="loading()"
+				[disabled]="!dateRange || dateRange.length < 2 || !dateRange[1]"
+				(onClick)="addAvailability()"
+			></p-button>
+		</div>
+
+		<!-- Existing records list -->
+		<div class="flex flex-col gap-3">
+			<h2 class="text-lg font-semibold">Zaplanowana dostępność</h2>
+
+			@if (loading() && availabilities().length === 0) {
+				<p class="text-surface-400">Ładowanie...</p>
+			} @else if (availabilities().length === 0) {
+				<p class="text-surface-400">Brak zaplanowanej dostępności.</p>
+			}
+
+			@for (avail of availabilities(); track avail.id) {
+				<div class="bg-surface-100 dark:bg-surface-800 rounded-xl p-4 flex items-center justify-between gap-4">
+					<div class="flex flex-col gap-0.5">
+						<span class="font-medium flex items-center gap-2">
+							<i class="pi pi-calendar text-green-500"></i>
+							{{ formatDateRange(avail.date_from, avail.date_to) }}
+						</span>
+						@if (avail.note) {
+							<span class="text-sm text-surface-500">{{ avail.note }}</span>
+						}
+					</div>
+					<p-button
+						icon="pi pi-trash"
+						severity="danger"
+						variant="text"
+						[rounded]="true"
+						[loading]="loading()"
+						(onClick)="deleteAvailability(avail.id)"
+					></p-button>
+				</div>
+			}
+		</div>
+	</div>
+</app-layout>
