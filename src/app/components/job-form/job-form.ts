@@ -10,6 +10,7 @@ import { ChipModule } from 'primeng/chip';
 import { JobFormModel, JobFormSubmitModel } from '../../models/job-form.model';
 import { AuthService } from '../../services/auth/auth.service';
 import { UserService } from '../../services/user/user.service';
+import { AvailabilityService } from '../../services/availability/availability.service';
 import { MessageService } from 'primeng/api';
 import type { JobDto, ProfileDto } from '../../types';
 
@@ -39,6 +40,7 @@ const initialFormValues: JobFormModel = {
 export class JobForm implements OnInit {
 	private auth = inject(AuthService);
 	private userService = inject(UserService);
+	private availabilityService = inject(AvailabilityService);
 	private messageService = inject(MessageService);
 
 	loading = input<boolean>(false);
@@ -50,6 +52,16 @@ export class JobForm implements OnInit {
 	selectedUser: ProfileDto | null = null;
 
 	filteredUsers = signal<ProfileDto[]>([]);
+	datesSelected = signal<boolean>(false);
+	availableUserIdSet = computed(
+		() =>
+			new Set(
+				this.availabilityService
+					.rangeItems()
+					.filter((a) => a.user_id)
+					.map((a) => a.user_id as string)
+			)
+	);
 
 	userProfile = this.auth.userProfile;
 	allUsers = this.userService.items;
@@ -78,6 +90,17 @@ export class JobForm implements OnInit {
 
 	ngOnInit(): void {
 		this.userService.getAll();
+	}
+
+	onDateChange(): void {
+		const { startDate, endDate } = this.formModel;
+		if (startDate && endDate && startDate <= endDate) {
+			this.datesSelected.set(true);
+			this.availabilityService.getAvailabilitiesForRange(startDate, endDate);
+		} else {
+			this.datesSelected.set(false);
+			this.availabilityService.clearRangeAvailabilities();
+		}
 	}
 
 	filterUsers(event: AutoCompleteCompleteEvent): void {

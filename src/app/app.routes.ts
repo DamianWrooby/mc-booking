@@ -69,6 +69,14 @@ export const routes: Routes = [
 			import('./components/my-account-page/my-account-page').then((mod) => mod.MyAccountPage),
 	},
 	{
+		path: 'availability',
+		canActivate: [authGuard],
+		loadComponent: () =>
+			import('./components/availability-page/availability-page').then(
+				(mod) => mod.AvailabilityPage
+			),
+	},
+	{
 		path: 'users-management',
 		canActivate: [authGuard, roleGuard],
 		loadComponent: () =>
