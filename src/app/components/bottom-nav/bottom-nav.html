@@ -58,6 +58,14 @@
               class="p-button-text justify-start w-full"
               (click)="navigateTo('/my-account')"
             ></button>
+            <div class="h-px my-1 bg-surface-200 dark:bg-surface-700"></div>
+            <button
+              pButton
+              label="Dostępność"
+              icon="pi pi-calendar-plus"
+              class="p-button-text justify-start w-full"
+              (click)="navigateTo('/availability')"
+            ></button>
             @if (isAdmin()) {
               <div class="h-px my-1 bg-surface-200 dark:bg-surface-700"></div>
               <button

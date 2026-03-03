@@ -2,6 +2,8 @@
   "name": "mc-booking",
   "short_name": "mc-booking",
   "display": "standalone",
+  "theme_color": "#0f172a",
+  "background_color": "#0f172a",
   "scope": "./",
   "start_url": "./",
   "icons": [

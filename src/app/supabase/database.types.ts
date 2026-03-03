@@ -20,7 +20,7 @@ export type Database = {
           date_from: string
           date_to: string
           id: string
-          note: string
+          note: string | null
           user_id: string
         }
         Insert: {
