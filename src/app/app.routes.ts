@@ -77,6 +77,21 @@ export const routes: Routes = [
 			),
 	},
 	{
+		path: 'reports',
+		canActivate: [authGuard],
+		loadComponent: () =>
+			import('./components/reports-page/reports-page').then((mod) => mod.ReportsPage),
+	},
+	{
+		path: 'reports-review',
+		canActivate: [authGuard, roleGuard],
+		loadComponent: () =>
+			import('./components/reports-review-page/reports-review-page').then(
+				(mod) => mod.ReportsReviewPage
+			),
+		data: { allowedRoles: ['ADMIN', 'MANAGER'] },
+	},
+	{
 		path: 'users-management',
 		canActivate: [authGuard, roleGuard],
 		loadComponent: () =>

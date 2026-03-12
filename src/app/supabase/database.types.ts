@@ -173,38 +173,53 @@ export type Database = {
       }
       JobReport: {
         Row: {
-          created_at: string
-          hourly_rate: number | null
-          hours_worked: number | null
+          created_at: string | null
           id: string
-          job_day_id: string
+          job_id: string
+          kilometers: string | null
+          meals: string | null
           notes: string | null
+          overtime: string | null
+          status: string
+          tools: string | null
+          updated_at: string | null
           user_id: string
+          wage_rate: string
         }
         Insert: {
-          created_at?: string
-          hourly_rate?: number | null
-          hours_worked?: number | null
+          created_at?: string | null
           id?: string
-          job_day_id: string
+          job_id: string
+          kilometers?: string | null
+          meals?: string | null
           notes?: string | null
+          overtime?: string | null
+          status?: string
+          tools?: string | null
+          updated_at?: string | null
           user_id: string
+          wage_rate?: string
         }
         Update: {
-          created_at?: string
-          hourly_rate?: number | null
-          hours_worked?: number | null
+          created_at?: string | null
           id?: string
-          job_day_id?: string
+          job_id?: string
+          kilometers?: string | null
+          meals?: string | null
           notes?: string | null
+          overtime?: string | null
+          status?: string
+          tools?: string | null
+          updated_at?: string | null
           user_id?: string
+          wage_rate?: string
         }
         Relationships: [
           {
-            foreignKeyName: "JobReport_job_day_id_fkey"
-            columns: ["job_day_id"]
+            foreignKeyName: "JobReport_job_id_fkey"
+            columns: ["job_id"]
             isOneToOne: false
-            referencedRelation: "JobDay"
+            referencedRelation: "Job"
             referencedColumns: ["id"]
           },
           {

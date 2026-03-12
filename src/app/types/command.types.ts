@@ -116,17 +116,17 @@ export type UpdateJobDayCommand = Omit<TablesUpdate<'JobDay'>, 'id' | 'job_id'>;
 
 /**
  * Command to create a new job report.
- * Omits server-generated fields (id, created_at)
+ * Omits server-generated fields (id, created_at, updated_at)
  */
 export type CreateJobReportCommand = Omit<
   TablesInsert<'JobReport'>,
-  'id' | 'created_at'
+  'id' | 'created_at' | 'updated_at'
 >;
 
-/** Command to update an existing job report */
+/** Command to update an existing job report (form fields only) */
 export type UpdateJobReportCommand = Omit<
   TablesUpdate<'JobReport'>,
-  'id' | 'created_at' | 'user_id' | 'job_day_id'
+  'id' | 'created_at' | 'updated_at' | 'user_id' | 'job_id'
 >;
 
 // =============================================================================
