@@ -22,6 +22,10 @@ export class BottomNav {
 
   isAuthenticated = this.authService.isAuthenticated;
   isAdmin = computed(() => this.authService.userProfile()?.role === 'ADMIN');
+  isManagerOrAdmin = computed(() => {
+    const role = this.authService.userProfile()?.role;
+    return role === 'ADMIN' || role === 'MANAGER';
+  });
   moreMenuOpen = signal(false);
 
   private currentUrl = toSignal(
@@ -37,7 +41,8 @@ export class BottomNav {
     return (
       url.startsWith('/my-account') ||
       url.startsWith('/users-management') ||
-      url.startsWith('/availability')
+      url.startsWith('/availability') ||
+      url.startsWith('/reports')
     );
   });
 

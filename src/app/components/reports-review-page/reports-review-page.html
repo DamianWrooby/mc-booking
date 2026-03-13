@@ -1,0 +1,115 @@
+<app-layout>
+	<h1 class="text-2xl font-bold mb-6">Przegląd raportów</h1>
+
+	@if (loading()) {
+		<div class="flex justify-center py-12">
+			<p-progress-spinner strokeWidth="4"></p-progress-spinner>
+		</div>
+	} @else if (selectedReport(); as report) {
+		<div class="w-full">
+			<!-- Report Detail View -->
+			<div class="mb-6">
+				<button pButton label="Powrót do listy" icon="pi pi-arrow-left"
+					class="p-button-text" (click)="closeDetail()"></button>
+			</div>
+
+			<!-- Header card -->
+			<div class="p-4 bg-surface-50 dark:bg-surface-800 rounded-lg border border-surface-200 dark:border-surface-700 mb-4">
+				<div class="flex justify-between items-start mb-3">
+					<h2 class="text-xl font-semibold">{{ report.Job.title }}</h2>
+					<p-tag [value]="getStatusLabel(report.status)"
+						[severity]="getStatusSeverity(report.status)"></p-tag>
+				</div>
+				<div class="flex flex-col gap-1 text-sm text-surface-600 dark:text-surface-400">
+					<p>
+						<span class="font-medium">Pracownik:</span> {{ report.Profile.username }}
+					</p>
+					<p>
+						<span class="font-medium">Termin:</span>
+						{{ report.Job.start_date | date:'d MMM yyyy' }} - {{ report.Job.end_date | date:'d MMM yyyy' }}
+					</p>
+					<p>
+						<span class="font-medium">Miejsce:</span> {{ report.Job.location }}
+					</p>
+				</div>
+			</div>
+
+			<!-- Report details card -->
+			<div class="p-4 bg-surface-50 dark:bg-surface-800 rounded-lg border border-surface-200 dark:border-surface-700 mb-4">
+				<h3 class="font-semibold mb-3">Szczegóły raportu</h3>
+				<div class="flex flex-col gap-2">
+					<div class="flex justify-between py-1 border-b border-surface-200 dark:border-surface-700">
+						<span class="font-medium text-sm">Stawka</span>
+						<span class="text-sm text-surface-600 dark:text-surface-400">{{ report.wage_rate || '—' }}</span>
+					</div>
+					<div class="flex justify-between py-1 border-b border-surface-200 dark:border-surface-700">
+						<span class="font-medium text-sm">Kilometry</span>
+						<span class="text-sm text-surface-600 dark:text-surface-400">{{ report.kilometers || '—' }}</span>
+					</div>
+					<div class="flex justify-between py-1 border-b border-surface-200 dark:border-surface-700">
+						<span class="font-medium text-sm">Narzędzia</span>
+						<span class="text-sm text-surface-600 dark:text-surface-400">{{ report.tools || '—' }}</span>
+					</div>
+					<div class="flex justify-between py-1 border-b border-surface-200 dark:border-surface-700">
+						<span class="font-medium text-sm">Posiłki</span>
+						<span class="text-sm text-surface-600 dark:text-surface-400">{{ report.meals || '—' }}</span>
+					</div>
+					<div class="flex justify-between py-1 border-b border-surface-200 dark:border-surface-700">
+						<span class="font-medium text-sm">Nadgodziny</span>
+						<span class="text-sm text-surface-600 dark:text-surface-400">{{ report.overtime || '—' }}</span>
+					</div>
+					<div class="flex justify-between py-1">
+						<span class="font-medium text-sm">Uwagi</span>
+						<span class="text-sm text-surface-600 dark:text-surface-400 text-right max-w-[60%]">{{ report.notes || '—' }}</span>
+					</div>
+				</div>
+			</div>
+
+			<!-- Action buttons -->
+			<div class="flex gap-2">
+				@if (report.status !== 'ACCEPTED') {
+					<p-button label="Zaakceptuj raport" icon="pi pi-check"
+						severity="success" (onClick)="acceptReport(report.id)"></p-button>
+				}
+				@if (report.status === 'ACCEPTED') {
+					<p-button label="Cofnij akceptację" icon="pi pi-undo"
+						severity="warn" (onClick)="revertReport(report.id)"></p-button>
+				}
+			</div>
+		</div>
+	} @else if (reports().length === 0) {
+		<div class="text-center py-12 text-gray-500">
+			<p>Brak raportów do przeglądu</p>
+		</div>
+	} @else {
+		<ul class="flex flex-col gap-4">
+			@for (report of reports(); track report.id) {
+				<li class="p-4 bg-surface-50 dark:bg-surface-800 rounded-lg border border-surface-200 dark:border-surface-700 cursor-pointer hover:bg-surface-100 dark:hover:bg-surface-700 transition-colors border-l-4"
+					[class.border-l-amber-500]="report.status === 'NEW'"
+					[class.border-l-blue-500]="report.status === 'SUBMITTED'"
+					[class.border-l-green-500]="report.status === 'ACCEPTED'"
+					(click)="openReport(report)">
+					<div class="flex justify-between items-start">
+						<h2 class="text-lg font-semibold mb-2">{{ report.Job.title }}</h2>
+						<p-tag [value]="getStatusLabel(report.status)"
+							[severity]="getStatusSeverity(report.status)"></p-tag>
+					</div>
+					<div class="flex flex-col gap-1 text-sm text-surface-600 dark:text-surface-400">
+						<p>
+							<span class="font-medium">Pracownik:</span>
+							{{ report.Profile.username }}
+						</p>
+						<p>
+							<span class="font-medium">Termin:</span>
+							{{ report.Job.start_date | date:'d MMM yyyy' }} - {{ report.Job.end_date | date:'d MMM yyyy' }}
+						</p>
+						<p>
+							<span class="font-medium">Miejsce:</span>
+							{{ report.Job.location }}
+						</p>
+					</div>
+				</li>
+			}
+		</ul>
+	}
+</app-layout>

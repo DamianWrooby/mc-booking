@@ -66,6 +66,24 @@
               class="p-button-text justify-start w-full"
               (click)="navigateTo('/availability')"
             ></button>
+            <div class="h-px my-1 bg-surface-200 dark:bg-surface-700"></div>
+            <button
+              pButton
+              label="Raporty"
+              icon="pi pi-file"
+              class="p-button-text justify-start w-full"
+              (click)="navigateTo('/reports')"
+            ></button>
+            @if (isManagerOrAdmin()) {
+              <div class="h-px my-1 bg-surface-200 dark:bg-surface-700"></div>
+              <button
+                pButton
+                label="Przegląd raportów"
+                icon="pi pi-file-check"
+                class="p-button-text justify-start w-full"
+                (click)="navigateTo('/reports-review')"
+              ></button>
+            }
             @if (isAdmin()) {
               <div class="h-px my-1 bg-surface-200 dark:bg-surface-700"></div>
               <button
