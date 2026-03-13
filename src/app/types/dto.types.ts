@@ -26,7 +26,7 @@ export type JobAssignmentDto = Tables<'JobAssignment'>;
 /** Job day (individual day within a job) DTO */
 export type JobDayDto = Tables<'JobDay'>;
 
-/** Job report (work log for a job day) DTO */
+/** Job report DTO */
 export type JobReportDto = Tables<'JobReport'>;
 
 /** Notification DTO */
@@ -47,19 +47,15 @@ export type JobAssignmentWithDetailsDto = JobAssignmentDto & {
   assigned_by_user: ProfileDto;
 };
 
-/** Job day with associated reports */
-export type JobDayWithReportsDto = JobDayDto & {
-  reports: JobReportDto[];
+/** Job report with embedded job details */
+export type JobReportWithJobDto = JobReportDto & {
+  Job: JobDto;
 };
 
-/** Job report with user profile */
-export type JobReportWithUserDto = JobReportDto & {
-  user: ProfileDto;
-};
-
-/** Job day with reports that include user profiles */
-export type JobDayWithDetailedReportsDto = JobDayDto & {
-  reports: JobReportWithUserDto[];
+/** Job report with embedded job and user profile (for manager review) */
+export type JobReportWithJobAndUserDto = JobReportDto & {
+  Job: JobDto;
+  Profile: ProfileDto;
 };
 
 /** Job with its assignments (users assigned to the job) */
@@ -79,12 +75,6 @@ export type JobWithDetailsDto = JobDto & {
   days: JobDayDto[];
 };
 
-/** Job with complete details including reports for each day */
-export type JobWithFullDetailsDto = JobDto & {
-  created_by_user: ProfileDto;
-  assignments: JobAssignmentWithUserDto[];
-  days: JobDayWithDetailedReportsDto[];
-};
 
 /** Availability with user profile */
 export type AvailabilityWithUserDto = AvailabilityDto & {
