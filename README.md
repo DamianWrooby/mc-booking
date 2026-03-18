@@ -1,59 +1,76 @@
-# McBooking
+# MC Booking
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.8.
+**Job & event scheduling platform for teams** — plan assignments, track availability, and keep everyone on the same page.
 
-## Development server
+<div align="center">
+  <img src="docs/screenshots/calendar-view.png" alt="MC Booking — calendar view with upcoming events" width="300" />
+</div>
 
-To start a local development server, run:
+## What is MC Booking?
 
-```bash
-ng serve
-```
+MC Booking is a web application designed for organizations that need to coordinate people across jobs, events, and locations. It provides a shared calendar where managers can create assignments, team members can declare their availability, and everyone has real-time visibility into the schedule.
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+### Key features
 
-## Code scaffolding
+- **Interactive calendar** — browse upcoming events by month with highlighted active days
+- **Job management** — create, edit, and track job assignments with location and date range details
+- **Availability declarations** — team members submit their available dates so managers can plan ahead
+- **Role-based access** — separate views and permissions for administrators, managers, and team members
+- **Reports** — generate summaries of assignments and activity
+- **Notifications** — stay informed about schedule changes in real time
+- **Mobile-first design** — optimized for phones with installable PWA support, works offline
+- **Dark mode** — easy on the eyes, day or night
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+## Who is it for?
 
-```bash
-ng generate component component-name
-```
+MC Booking is built for any team that schedules people for on-site work — event crews, service companies, field teams, or freelance collectives. If you need a simple, shared view of "who is where and when," this is it.
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## Tech stack
 
-```bash
-ng generate --help
-```
+| Layer | Technology |
+|-------|-----------|
+| Frontend | Angular 21, TypeScript, TailwindCSS 4 |
+| UI components | PrimeNG |
+| Backend & auth | Supabase (PostgreSQL, Auth, RLS) |
+| Deployment | PWA-ready, service worker enabled |
 
-## Building
+## Getting started
 
-To build the project run:
+### Prerequisites
 
-```bash
-ng build
-```
+- [Node.js](https://nodejs.org/) (v20+)
+- npm (included with Node.js)
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
+### Installation
 
 ```bash
-ng e2e
+git clone <repository-url>
+cd mc-booking
+npm install
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+### Development
 
-## Additional Resources
+```bash
+npm start
+```
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Open [http://localhost:4200](http://localhost:4200) in your browser. The app reloads automatically on code changes.
+
+### Production build
+
+```bash
+npm run build
+```
+
+Build artifacts are output to the `dist/` directory.
+
+### Tests
+
+```bash
+npm test
+```
+
+## License
+
+Private project. All rights reserved.
