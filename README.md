@@ -3,7 +3,7 @@
 **Job & event scheduling platform for teams** — plan assignments, track availability, and keep everyone on the same page.
 
 <div align="center">
-  <img src="docs/screenshots/calendar-view.png" alt="MC Booking — calendar view with upcoming events" width="300" />
+  <img src="docs/screenshots/mobile-app-showcase.jpg" alt="MC Booking — calendar view with upcoming events" width="300" />
 </div>
 
 ## What is MC Booking?
