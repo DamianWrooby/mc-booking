@@ -29,6 +29,9 @@ export type JobDayDto = Tables<'JobDay'>;
 /** Job report DTO */
 export type JobReportDto = Tables<'JobReport'>;
 
+/** Job report day (per-day entry within a report) DTO */
+export type JobReportDayDto = Tables<'JobReportDay'>;
+
 /** Notification DTO */
 export type NotificationDto = Tables<'Notification'>;
 
@@ -47,15 +50,17 @@ export type JobAssignmentWithDetailsDto = JobAssignmentDto & {
   assigned_by_user: ProfileDto;
 };
 
-/** Job report with embedded job details */
+/** Job report with embedded job details and per-day entries */
 export type JobReportWithJobDto = JobReportDto & {
   Job: JobDto;
+  JobReportDay: JobReportDayDto[];
 };
 
-/** Job report with embedded job and user profile (for manager review) */
+/** Job report with embedded job, user profile, and per-day entries (for manager review) */
 export type JobReportWithJobAndUserDto = JobReportDto & {
   Job: JobDto;
   Profile: ProfileDto;
+  JobReportDay: JobReportDayDto[];
 };
 
 /** Job with its assignments (users assigned to the job) */
