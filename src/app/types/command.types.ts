@@ -123,10 +123,26 @@ export type CreateJobReportCommand = Omit<
   'id' | 'created_at' | 'updated_at'
 >;
 
-/** Command to update an existing job report (form fields only) */
+/** Command to update an existing job report (event-level fields only) */
 export type UpdateJobReportCommand = Omit<
   TablesUpdate<'JobReport'>,
   'id' | 'created_at' | 'updated_at' | 'user_id' | 'job_id'
+>;
+
+// =============================================================================
+// Job Report Day Commands
+// =============================================================================
+
+/**
+ * Command to create a new job report day entry.
+ * Omits server-generated id field.
+ */
+export type CreateJobReportDayCommand = Omit<TablesInsert<'JobReportDay'>, 'id'>;
+
+/** Command to update an existing job report day entry */
+export type UpdateJobReportDayCommand = Omit<
+  TablesUpdate<'JobReportDay'>,
+  'id' | 'report_id' | 'date'
 >;
 
 // =============================================================================

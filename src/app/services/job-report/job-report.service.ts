@@ -1,13 +1,17 @@
 import { computed, effect, inject, Injectable, signal } from '@angular/core';
 import { from, of } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { catchError, map, switchMap } from 'rxjs/operators';
 
 import { ErrorService } from '../error/error.service';
 import { AuthService } from '../auth/auth.service';
 import { supabase } from '../../supabase/supabase-client';
 import type { Tables } from '../../supabase/database.types';
 import type { UpdateJobReportCommand } from '../../types/command.types';
-import type { JobReportWithJobDto, JobReportWithJobAndUserDto } from '../../types/dto.types';
+import type {
+  JobReportWithJobDto,
+  JobReportWithJobAndUserDto,
+  JobReportDayDto,
+} from '../../types/dto.types';
 
 type JobReport = Tables<'JobReport'>;
 
@@ -24,6 +28,18 @@ const initialState: JobReportState = {
   loading: false,
   error: null,
 };
+
+/** Generate all dates between start and end (inclusive) as YYYY-MM-DD strings */
+function generateDateRange(startDate: string, endDate: string): string[] {
+  const dates: string[] = [];
+  const current = new Date(startDate + 'T00:00:00Z');
+  const end = new Date(endDate + 'T00:00:00Z');
+  while (current <= end) {
+    dates.push(current.toISOString().slice(0, 10));
+    current.setUTCDate(current.getUTCDate() + 1);
+  }
+  return dates;
+}
 
 @Injectable({
   providedIn: 'root',
@@ -50,7 +66,8 @@ export class JobReportService {
 
   /**
    * Load reports for current user. Also auto-creates NEW reports
-   * for completed jobs that don't have a report yet.
+   * for completed jobs that don't have a report yet, and ensures
+   * per-day entries exist for each report.
    */
   loadUserReports(userId: string): void {
     this.setLoading(true);
@@ -89,7 +106,7 @@ export class JobReportService {
 
   /**
    * Auto-create reports for completed jobs that don't have one,
-   * then fetch all user reports.
+   * then ensure per-day entries exist, then fetch all user reports.
    */
   private ensureReportsExist(
     userId: string,
@@ -98,7 +115,7 @@ export class JobReportService {
     from(
       supabase
         .from('JobReport')
-        .select('*, Job(*)')
+        .select('*, Job(*), JobReportDay(*)')
         .eq('user_id', userId)
     )
       .pipe(
@@ -106,53 +123,97 @@ export class JobReportService {
           if (error) throw error;
           return (data ?? []) as JobReportWithJobDto[];
         }),
+        switchMap((existingReports) => {
+          const existingJobIds = new Set(existingReports.map((r) => r.job_id));
+          const missingJobs = completedJobs.filter((j) => !existingJobIds.has(j.job_id));
+
+          if (missingJobs.length > 0) {
+            const newReports = missingJobs.map((j) => ({
+              job_id: j.job_id,
+              user_id: userId,
+              status: 'NEW',
+              created_at: new Date().toISOString(),
+              updated_at: new Date().toISOString(),
+            }));
+
+            return from(
+              supabase
+                .from('JobReport')
+                .insert(newReports)
+                .select('*, Job(*), JobReportDay(*)')
+            ).pipe(
+              map(({ data, error }) => {
+                if (error) throw error;
+                return [...existingReports, ...(data ?? []) as JobReportWithJobDto[]];
+              })
+            );
+          }
+          return of(existingReports);
+        }),
+        switchMap((allReports) => this.ensureReportDaysExist(allReports, completedJobs)),
         catchError(() => {
           this.setError('Nie udało się załadować raportów');
           return of([] as JobReportWithJobDto[]);
         })
       )
-      .subscribe((existingReports) => {
-        const existingJobIds = new Set(existingReports.map((r) => r.job_id));
-        const missingJobs = completedJobs.filter((j) => !existingJobIds.has(j.job_id));
-
-        if (missingJobs.length > 0) {
-          const newReports = missingJobs.map((j) => ({
-            job_id: j.job_id,
-            user_id: userId,
-            wage_rate: '',
-            status: 'NEW',
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString(),
-          }));
-
-          from(
-            supabase
-              .from('JobReport')
-              .insert(newReports)
-              .select('*, Job(*)')
-          )
-            .pipe(
-              map(({ data, error }) => {
-                if (error) throw error;
-                return (data ?? []) as JobReportWithJobDto[];
-              }),
-              catchError(() => of([] as JobReportWithJobDto[]))
-            )
-            .subscribe((created) => {
-              this.state.update((s) => ({
-                ...s,
-                items: [...existingReports, ...created],
-                loading: false,
-              }));
-            });
-        } else {
-          this.state.update((s) => ({
-            ...s,
-            items: existingReports,
-            loading: false,
-          }));
-        }
+      .subscribe((reports) => {
+        this.state.update((s) => ({
+          ...s,
+          items: reports,
+          loading: false,
+        }));
       });
+  }
+
+  /**
+   * For each report, check if day entries exist for every date in the job range.
+   * Create missing ones and return updated reports.
+   */
+  private ensureReportDaysExist(
+    reports: JobReportWithJobDto[],
+    completedJobs: { job_id: string; job: Tables<'Job'> }[]
+  ) {
+    const jobMap = new Map(completedJobs.map((j) => [j.job_id, j.job]));
+    const missingDays: { report_id: string; date: string; wage_rate: string }[] = [];
+
+    for (const report of reports) {
+      const job = jobMap.get(report.job_id) ?? report.Job;
+      if (!job) continue;
+
+      const expectedDates = generateDateRange(job.start_date, job.end_date);
+      const existingDates = new Set((report.JobReportDay ?? []).map((d) => d.date));
+
+      for (const date of expectedDates) {
+        if (!existingDates.has(date)) {
+          missingDays.push({ report_id: report.id, date, wage_rate: '' });
+        }
+      }
+    }
+
+    if (missingDays.length === 0) {
+      return of(reports);
+    }
+
+    return from(supabase.from('JobReportDay').insert(missingDays).select()).pipe(
+      switchMap(() => {
+        // Re-fetch to get updated day entries
+        const userId = reports[0]?.user_id;
+        if (!userId) return of(reports);
+
+        return from(
+          supabase
+            .from('JobReport')
+            .select('*, Job(*), JobReportDay(*)')
+            .eq('user_id', userId)
+        ).pipe(
+          map(({ data, error }) => {
+            if (error) throw error;
+            return (data ?? []) as JobReportWithJobDto[];
+          })
+        );
+      }),
+      catchError(() => of(reports))
+    );
   }
 
   /** Load all reports (for manager/admin review page) */
@@ -163,7 +224,7 @@ export class JobReportService {
     from(
       supabase
         .from('JobReport')
-        .select('*, Job(*), Profile(*)')
+        .select('*, Job(*), Profile(*), JobReportDay(*)')
         .order('updated_at', { ascending: false })
     )
       .pipe(
@@ -181,24 +242,40 @@ export class JobReportService {
       });
   }
 
-  /** Update report fields and set status to SUBMITTED */
-  submitReport(id: string, changes: UpdateJobReportCommand): void {
+  /**
+   * Submit report: save event-level fields + per-day entries, then set status to SUBMITTED.
+   */
+  submitReport(id: string, changes: UpdateJobReportCommand, days: JobReportDayDto[]): void {
     this.setLoading(true);
     this.resetError();
 
+    // First upsert all day entries
+    const dayUpserts = days.map((d) => ({
+      id: d.id,
+      report_id: d.report_id,
+      date: d.date,
+      wage_rate: d.wage_rate,
+      tools: d.tools,
+    }));
+
     from(
-      supabase
-        .from('JobReport')
-        .update({
-          ...changes,
-          status: 'SUBMITTED',
-          updated_at: new Date().toISOString(),
-        })
-        .eq('id', id)
-        .select('*, Job(*)')
-        .single()
+      supabase.from('JobReportDay').upsert(dayUpserts, { onConflict: 'report_id,date' })
     )
       .pipe(
+        switchMap(() =>
+          from(
+            supabase
+              .from('JobReport')
+              .update({
+                ...changes,
+                status: 'SUBMITTED',
+                updated_at: new Date().toISOString(),
+              })
+              .eq('id', id)
+              .select('*, Job(*), JobReportDay(*)')
+              .single()
+          )
+        ),
         map(({ data, error }) => {
           if (error) throw error;
           return data as JobReportWithJobDto;
@@ -231,7 +308,7 @@ export class JobReportService {
           updated_at: new Date().toISOString(),
         })
         .eq('id', id)
-        .select('*, Job(*), Profile(*)')
+        .select('*, Job(*), Profile(*), JobReportDay(*)')
         .single()
     )
       .pipe(
@@ -267,7 +344,7 @@ export class JobReportService {
           updated_at: new Date().toISOString(),
         })
         .eq('id', id)
-        .select('*, Job(*), Profile(*)')
+        .select('*, Job(*), Profile(*), JobReportDay(*)')
         .single()
     )
       .pipe(

@@ -5,7 +5,7 @@ import { ButtonModule } from 'primeng/button';
 import { TagModule } from 'primeng/tag';
 import { Layout } from '../layout/layout';
 import { JobReportService } from '../../services/job-report/job-report.service';
-import type { JobReportWithJobAndUserDto } from '../../types/dto.types';
+import type { JobReportWithJobAndUserDto, JobReportDayDto } from '../../types/dto.types';
 
 @Component({
   selector: 'app-reports-review-page',
@@ -20,6 +20,7 @@ export class ReportsReviewPage implements OnInit {
   reports = this.reportService.allItems;
   loading = this.reportService.loading;
   selectedReport = signal<JobReportWithJobAndUserDto | null>(null);
+  sortedDays = signal<JobReportDayDto[]>([]);
 
   ngOnInit() {
     this.reportService.loadAllReports();
@@ -27,6 +28,9 @@ export class ReportsReviewPage implements OnInit {
 
   openReport(report: JobReportWithJobAndUserDto): void {
     this.selectedReport.set(report);
+    this.sortedDays.set(
+      [...(report.JobReportDay ?? [])].sort((a, b) => a.date.localeCompare(b.date))
+    );
   }
 
   closeDetail(): void {

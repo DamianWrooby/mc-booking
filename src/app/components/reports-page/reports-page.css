@@ -1,0 +1,7 @@
+app-reports-page .p-panel {
+  background-color: var(--p-surface-50);
+}
+
+app-reports-page .mc-booking-dark .p-panel {
+  background-color: var(--p-surface-300);
+}
