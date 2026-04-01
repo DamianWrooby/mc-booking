@@ -56,8 +56,8 @@ export class ReportsPage implements OnInit {
   overtime = '';
   notes = '';
 
-  // Per-day entries (mutable array for template-driven forms)
-  dayEntries: JobReportDayDto[] = [];
+  // Per-day entries as signal for proper zoneless change detection
+  dayEntries = signal<JobReportDayDto[]>([]);
 
   ngOnInit() {
     const userId = this.userId();
@@ -74,8 +74,8 @@ export class ReportsPage implements OnInit {
     this.notes = report.notes ?? '';
 
     // Sort day entries by date
-    this.dayEntries = [...(report.JobReportDay ?? [])].sort(
-      (a, b) => a.date.localeCompare(b.date)
+    this.dayEntries.set(
+      [...(report.JobReportDay ?? [])].sort((a, b) => a.date.localeCompare(b.date))
     );
   }
 
@@ -85,7 +85,7 @@ export class ReportsPage implements OnInit {
     this.meals = '';
     this.overtime = '';
     this.notes = '';
-    this.dayEntries = [];
+    this.dayEntries.set([]);
   }
 
   isReadOnly(): boolean {
@@ -93,7 +93,8 @@ export class ReportsPage implements OnInit {
   }
 
   hasAllWageRates(): boolean {
-    return this.dayEntries.length > 0 && this.dayEntries.every((d) => d.wage_rate.trim() !== '');
+    const entries = this.dayEntries();
+    return entries.length > 0 && entries.every((d) => d.wage_rate.trim() !== '');
   }
 
   saveReport(): void {
@@ -108,29 +109,37 @@ export class ReportsPage implements OnInit {
         overtime: this.overtime || null,
         notes: this.notes || null,
       },
-      this.dayEntries
+      this.dayEntries()
     );
     this.selectedReport.set(null);
   }
 
+  updateWageRate(index: number, value: string): void {
+    this.dayEntries.update((entries) =>
+      entries.map((e, i) => (i === index ? { ...e, wage_rate: value } : e))
+    );
+  }
+
+  updateTools(index: number, value: string): void {
+    this.dayEntries.update((entries) =>
+      entries.map((e, i) => (i === index ? { ...e, tools: value } : e))
+    );
+  }
+
   copyWageRateFromIndex(index: number): void {
-    const rate = this.dayEntries[index]?.wage_rate ?? '';
+    const rate = this.dayEntries()[index]?.wage_rate ?? '';
     if (!rate.trim()) return;
-    for (let i = 0; i < this.dayEntries.length; i++) {
-      if (i !== index) {
-        this.dayEntries[i].wage_rate = rate;
-      }
-    }
+    this.dayEntries.update((entries) =>
+      entries.map((e, i) => (i !== index ? { ...e, wage_rate: rate } : e))
+    );
   }
 
   copyToolsFromIndex(index: number): void {
-    const tools = this.dayEntries[index]?.tools ?? '';
+    const tools = this.dayEntries()[index]?.tools ?? '';
     if (!tools.trim()) return;
-    for (let i = 0; i < this.dayEntries.length; i++) {
-      if (i !== index) {
-        this.dayEntries[i].tools = tools;
-      }
-    }
+    this.dayEntries.update((entries) =>
+      entries.map((e, i) => (i !== index ? { ...e, tools: tools } : e))
+    );
   }
 
   getStatusSeverity(status: string): 'warn' | 'info' | 'success' | 'secondary' {
