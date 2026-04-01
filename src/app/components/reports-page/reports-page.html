@@ -53,11 +53,12 @@
 					<div class="flex flex-col gap-1">
 						<label class="text-xs text-surface-500 sm:hidden">Stawka *</label>
 						<div class="flex items-center gap-1">
-							<input pInputText [(ngModel)]="dayEntries[i].wage_rate" placeholder="Np. 1.5x"
+							<input pInputText [ngModel]="dayEntries()[i].wage_rate"
+								(ngModelChange)="updateWageRate(i, $event)" placeholder="Np. 1.5x"
 								[disabled]="isReadOnly()" class="w-full" />
-							@if (!isReadOnly() && dayEntries.length > 1) {
+							@if (!isReadOnly() && dayEntries().length > 1) {
 							<button pButton icon="pi pi-copy" class="p-button-text p-button-sm p-button-plain shrink-0"
-								[disabled]="!dayEntries[i].wage_rate.trim()"
+								[disabled]="!dayEntries()[i].wage_rate.trim()"
 								pTooltip="Wypełnij pozostałe pola tą stawką" tooltipPosition="top"
 								(click)="copyWageRateFromIndex(i)"></button>
 							}
@@ -66,11 +67,12 @@
 					<div class="flex flex-col gap-1">
 						<label class="text-xs text-surface-500 sm:hidden">Narzędzia</label>
 						<div class="flex items-center gap-1">
-							<input pInputText [(ngModel)]="dayEntries[i].tools" placeholder="Np. Wiertarka"
+							<input pInputText [ngModel]="dayEntries()[i].tools"
+								(ngModelChange)="updateTools(i, $event)" placeholder="Np. Wiertarka"
 								[disabled]="isReadOnly()" class="w-full" />
-							@if (!isReadOnly() && dayEntries.length > 1) {
+							@if (!isReadOnly() && dayEntries().length > 1) {
 							<button pButton icon="pi pi-copy" class="p-button-text p-button-sm p-button-plain shrink-0"
-								[disabled]="!dayEntries[i].tools?.trim()"
+								[disabled]="!dayEntries()[i].tools?.trim()"
 								pTooltip="Wypełnij pozostałe pola tymi narzędziami" tooltipPosition="top"
 								(click)="copyToolsFromIndex(i)"></button>
 							}
