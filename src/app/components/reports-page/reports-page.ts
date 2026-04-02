@@ -36,7 +36,6 @@ import type { JobReportWithJobDto, JobReportDayDto } from '../../types/dto.types
     PanelModule,
   ],
   templateUrl: './reports-page.html',
-  styleUrl: './reports-page.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
 })
