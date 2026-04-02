@@ -269,6 +269,7 @@ export class JobReportService {
               .update({
                 ...changes,
                 status: 'SUBMITTED',
+                submitted_at: new Date().toISOString(),
                 updated_at: new Date().toISOString(),
               })
               .eq('id', id)
@@ -305,6 +306,7 @@ export class JobReportService {
         .from('JobReport')
         .update({
           status: 'ACCEPTED',
+          accepted_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
         })
         .eq('id', id)
@@ -341,6 +343,7 @@ export class JobReportService {
         .from('JobReport')
         .update({
           status: 'SUBMITTED',
+          accepted_at: null,
           updated_at: new Date().toISOString(),
         })
         .eq('id', id)
