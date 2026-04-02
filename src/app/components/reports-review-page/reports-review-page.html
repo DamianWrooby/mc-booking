@@ -31,6 +31,18 @@
 					<p>
 						<span class="font-medium">Miejsce:</span> {{ report.Job.location }}
 					</p>
+					@if (report.submitted_at) {
+						<p>
+							<span class="font-medium">Wysłano:</span>
+							{{ report.submitted_at | date:'d MMM yyyy, HH:mm' }}
+						</p>
+					}
+					@if (report.accepted_at) {
+						<p>
+							<span class="font-medium">Zaakceptowano:</span>
+							{{ report.accepted_at | date:'d MMM yyyy, HH:mm' }}
+						</p>
+					}
 				</div>
 			</div>
 

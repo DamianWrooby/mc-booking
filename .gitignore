@@ -46,4 +46,5 @@ Thumbs.db
 .vscode
 .claude
 .agents
+.planning
 PLAN.md
