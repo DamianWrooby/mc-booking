@@ -173,6 +173,7 @@ export type Database = {
       }
       JobReport: {
         Row: {
+          accepted_at: string | null
           created_at: string | null
           id: string
           job_id: string
@@ -181,10 +182,12 @@ export type Database = {
           notes: string | null
           overtime: string | null
           status: string
+          submitted_at: string | null
           updated_at: string | null
           user_id: string
         }
         Insert: {
+          accepted_at?: string | null
           created_at?: string | null
           id?: string
           job_id: string
@@ -193,10 +196,12 @@ export type Database = {
           notes?: string | null
           overtime?: string | null
           status?: string
+          submitted_at?: string | null
           updated_at?: string | null
           user_id: string
         }
         Update: {
+          accepted_at?: string | null
           created_at?: string | null
           id?: string
           job_id?: string
@@ -205,6 +210,7 @@ export type Database = {
           notes?: string | null
           overtime?: string | null
           status?: string
+          submitted_at?: string | null
           updated_at?: string | null
           user_id?: string
         }
