@@ -22,22 +22,22 @@ import { AuthService } from '../../services/auth/auth.service';
 import type { JobReportWithJobDto, JobReportDayDto } from '../../types/dto.types';
 
 @Component({
-	selector: 'app-reports-page',
-	imports: [
-		Layout,
-		ProgressSpinnerModule,
-		ButtonModule,
-		DatePipe,
-		FormsModule,
-		InputTextModule,
-		TextareaModule,
-		TagModule,
-		TooltipModule,
-		PanelModule,
-	],
-	templateUrl: './reports-page.html',
-	changeDetection: ChangeDetectionStrategy.OnPush,
-	encapsulation: ViewEncapsulation.None,
+  selector: 'app-reports-page',
+  imports: [
+    Layout,
+    ProgressSpinnerModule,
+    ButtonModule,
+    DatePipe,
+    FormsModule,
+    InputTextModule,
+    TextareaModule,
+    TagModule,
+    TooltipModule,
+    PanelModule,
+  ],
+  templateUrl: './reports-page.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  encapsulation: ViewEncapsulation.None,
 })
 export class ReportsPage implements OnInit {
 	private reportService = inject(JobReportService);
