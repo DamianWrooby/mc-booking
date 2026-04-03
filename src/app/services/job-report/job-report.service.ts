@@ -32,8 +32,8 @@ const initialState: JobReportState = {
 /** Generate all dates between start and end (inclusive) as YYYY-MM-DD strings */
 function generateDateRange(startDate: string, endDate: string): string[] {
   const dates: string[] = [];
-  const current = new Date(startDate + 'T00:00:00Z');
-  const end = new Date(endDate + 'T00:00:00Z');
+  const current = new Date(startDate.slice(0, 10) + 'T00:00:00Z');
+  const end = new Date(endDate.slice(0, 10) + 'T00:00:00Z');
   while (current <= end) {
     dates.push(current.toISOString().slice(0, 10));
     current.setUTCDate(current.getUTCDate() + 1);
