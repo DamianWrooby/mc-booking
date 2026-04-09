@@ -37,8 +37,8 @@ export class ConfirmEmailPage implements OnInit {
 		const params = new URLSearchParams(hash);
 		const type = params.get('type');
 
-		console.log('Confirm email - hash:', hash);
-		console.log('Confirm email - type:', type);
+		console.log('Confirm email - hash:', hash); // TODO: remove
+		console.log('Confirm email - type:', type); // TODO: remove
 
 		if (hash.includes('error')) {
 			this.errorService.showError('Nie można potwierdzić adresu email. Spróbuj ponownie za chwilę.');

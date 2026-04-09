@@ -12,6 +12,7 @@ import { FormsModule } from '@angular/forms';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
+import { RadioButtonModule } from 'primeng/radiobutton';
 import { TextareaModule } from 'primeng/textarea';
 import { TagModule } from 'primeng/tag';
 import { TooltipModule } from 'primeng/tooltip';
@@ -30,6 +31,7 @@ import type { JobReportWithJobDto, JobReportDayDto } from '../../types/dto.types
     DatePipe,
     FormsModule,
     InputTextModule,
+    RadioButtonModule,
     TextareaModule,
     TagModule,
     TooltipModule,
@@ -71,7 +73,11 @@ export class ReportsPage implements OnInit {
 		this.overtime = report.overtime ?? '';
 		this.notes = report.notes ?? '';
 
-		this.dayEntries.set([...(report.JobReportDay ?? [])].sort((a, b) => a.date.localeCompare(b.date)));
+		this.dayEntries.set(
+			[...(report.JobReportDay ?? [])]
+				.sort((a, b) => a.date.localeCompare(b.date))
+				.map((d) => ({ ...d, tools: d.tools || 'Nie' }))
+		);
 	}
 
 	closeForm(): void {
