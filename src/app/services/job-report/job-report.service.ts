@@ -5,6 +5,7 @@ import { catchError, map, switchMap } from 'rxjs/operators';
 import { ErrorService } from '../error/error.service';
 import { AuthService } from '../auth/auth.service';
 import { supabase } from '../../supabase/supabase-client';
+import { environment } from '../../../environments/environment';
 import type { Tables } from '../../supabase/database.types';
 import type { UpdateJobReportCommand } from '../../types/command.types';
 import type {
@@ -85,9 +86,14 @@ export class JobReportService {
         map(({ data, error }) => {
           if (error) throw error;
           return (data ?? [])
-            .filter(
-              (a) => a.Job !== null && new Date((a.Job as Tables<'Job'>).end_date) < today
-            )
+            .filter((a) => {
+              if (a.Job === null) return false;
+              const job = a.Job as Tables<'Job'>;
+              const cutoffDate = environment.allowReportsBeforeJobEnd
+                ? job.start_date
+                : job.end_date;
+              return new Date(cutoffDate) < today;
+            })
             .map((a) => ({ job_id: a.job_id, job: a.Job as Tables<'Job'> }));
         }),
         catchError(() => {
