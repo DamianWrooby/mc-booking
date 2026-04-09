@@ -39,7 +39,7 @@
 				class="hidden sm:grid grid-cols-[100px_1fr_1fr] gap-2 px-3 py-2 text-xs font-semibold text-surface-500 uppercase tracking-wider">
 				<span>Data</span>
 				<span>Stawka *</span>
-				<span>Narzędzia</span>
+				<span>Wysokość</span>
 			</div>
 
 			<!-- Day entries list -->
@@ -65,15 +65,24 @@
 						</div>
 					</div>
 					<div class="flex flex-col gap-1">
-						<label class="text-xs text-surface-500 sm:hidden">Narzędzia</label>
-						<div class="flex items-center gap-1">
-							<input pInputText [ngModel]="dayEntries()[i].tools"
-								(ngModelChange)="updateTools(i, $event)" placeholder="Np. Wiertarka"
-								[disabled]="isReadOnly()" class="w-full" />
+						<label class="text-xs text-surface-500 sm:hidden">Wysokość</label>
+						<div class="flex items-center gap-3">
+							<div class="flex items-center gap-1">
+								<p-radioButton name="tools_{{i}}" value="Tak" [ngModel]="dayEntries()[i].tools"
+									(ngModelChange)="updateTools(i, $event)"
+									[disabled]="isReadOnly()" inputId="tools_tak_{{i}}" />
+								<label for="tools_tak_{{i}}" class="text-sm">Tak</label>
+							</div>
+							<div class="flex items-center gap-1">
+								<p-radioButton name="tools_{{i}}" value="Nie" [ngModel]="dayEntries()[i].tools"
+									(ngModelChange)="updateTools(i, $event)"
+									[disabled]="isReadOnly()" inputId="tools_nie_{{i}}" />
+								<label for="tools_nie_{{i}}" class="text-sm">Nie</label>
+							</div>
 							@if (!isReadOnly() && dayEntries().length > 1) {
 							<button pButton icon="pi pi-copy" class="p-button-text p-button-sm p-button-plain shrink-0"
 								[disabled]="!dayEntries()[i].tools?.trim()"
-								pTooltip="Wypełnij pozostałe pola tymi narzędziami" tooltipPosition="top"
+								pTooltip="Wypełnij pozostałe pola tą wartością" tooltipPosition="top"
 								(click)="copyToolsFromIndex(i)"></button>
 							}
 						</div>
